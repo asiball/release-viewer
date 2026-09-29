@@ -50,6 +50,8 @@ def _build_parser() -> argparse.ArgumentParser:
                            description="collect と同じ走査をして、error 級の違反があれば終了コード 1。"
                                        "-o / --site を付ければ JSON も出力する")
     check.add_argument("--strict", action="store_true", help="warning も違反として扱う")
+    check.add_argument("--series", action="append", metavar="ID",
+                       help="終了コードの判定をこの系列の違反に絞る（系列に紐づかない違反は常に対象）。繰り返し可")
     return ap
 
 
@@ -83,6 +85,10 @@ def _run(args: argparse.Namespace) -> int:
     data = Collector(args.repo, config_ref=args.config_ref, config_dir=args.config_dir,
                      remote=args.remote, since_ref=args.since_ref, name=args.name,
                      overrides=dict(args.override)).collect()
+    defined = {s["id"] for s in data["series"]}
+    unknown = sorted(set(getattr(args, "series", None) or []) - defined)
+    if unknown:
+        raise ConfigError(f"--series の系列が定義されていない: {', '.join(unknown)}")
 
     text = json.dumps(data, ensure_ascii=False, indent=1)
     if args.output:
@@ -96,11 +102,19 @@ def _run(args: argparse.Namespace) -> int:
         print(text)
 
     if args.command == "check":
-        failing = [v for v in data["violations"] if v["severity"] == "error" or args.strict]
+        # --series の絞り込みは終了コードと stderr だけ（JSON は全件）。定義済みの系列に紐づかない違反
+        # （設定エラー、タグ・コミット単位の警告、未定義の系列を指す宣言など）は常に対象にする
+        targets = [v for v in data["violations"]
+                   if not args.series or v["refs"].get("series") not in defined or v["refs"]["series"] in args.series]
+        failing = [v for v in targets if v["severity"] == "error" or args.strict]
         for v in failing:
             print(f"{v['severity'].upper()}: [{v['kind']}] {v['message']}", file=sys.stderr)
         s = data["summary"]
-        print(f"errors={s['errors']} warnings={s['warnings']}", file=sys.stderr)
+        line = (f"errors={sum(v['severity'] == 'error' for v in targets)} "
+                f"warnings={sum(v['severity'] == 'warning' for v in targets)}")
+        if args.series:
+            line += f" (of {s['errors']}/{s['warnings']} total)"
+        print(line, file=sys.stderr)
         return 1 if failing else 0
     return 0
 

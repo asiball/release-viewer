@@ -59,7 +59,7 @@ URL のハッシュで画面と対象を指定できるので、リンクで共�
 release-viewer collect <repo> [-o data.json] [--site DIR] [--config-ref main] [--config-dir DIR]
                               [--remote origin] [--since-ref REF] [--name NAME]
                               [--override SERIES=REF ...]
-release-viewer check   <repo> [collect と同じオプション] [--strict]
+release-viewer check   <repo> [collect と同じオプション] [--strict] [--series ID ...]
 ```
 
 `pip install .` で `release-viewer` コマンドが入ります。インストールせずに `python -m release_viewer …` でも同じです。
@@ -79,6 +79,7 @@ release-viewer check   <repo> [collect と同じオプション] [--strict]
 | `--since-ref` | 指定した ref の祖先を走査しない（大規模リポジトリ向け） |
 | `--override` | `系列=ref` の形で、系列の HEAD をブランチではなく ref（`HEAD` や SHA も可）にして走査する。繰り返し可。PR をマージした後の状態を評価するのに使う（CI の `pull_request` では `refs/pull/N/merge` が HEAD になる）。設定（`.release/`）は引き続き `--config-ref` から読むので、PR が `config.toml` や `exclusions.toml` 自体を変える場合は `--config-ref HEAD` も併せて渡す |
 | `--strict` | `check` のみ。warning（patch-id のみ一致、maintenance 系列の未伝播など）も失敗扱いにする |
+| `--series` | `check` のみ。終了コードの判定（と標準エラーの一覧）を、指定した系列に紐づく違反に絞る。繰り返し可。系列に紐づかない違反（設定エラー、タグ・コミット単位の警告など）は常に対象。JSON の `violations` / `summary` は絞り込まない |
 
 終了コードは、`0` が成功、`1` が `check` で違反あり、`2` が設定・引数・git のエラーです。想定外の例外（`git` が見つからない等）も traceback を標準エラーに出して `2` で終えます。
 
