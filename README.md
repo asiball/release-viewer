@@ -60,6 +60,8 @@ release-viewer collect <repo> [-o data.json] [--site DIR] [--config-ref main] [-
                               [--remote origin] [--since-ref REF] [--name NAME]
                               [--override SERIES=REF ...]
 release-viewer check   <repo> [collect と同じオプション] [--strict] [--series ID ...]
+release-viewer lint-pr <repo> --series ID [--head HEAD] [--strict] [--config-ref main] [--config-dir DIR]
+                              [--remote origin]
 ```
 
 `pip install .` で `release-viewer` コマンドが入ります。インストールせずに `python -m release_viewer …` でも同じです。
@@ -68,6 +70,7 @@ release-viewer check   <repo> [collect と同じオプション] [--strict] [--s
 |---|---|
 | `collect` | 走査して JSON を出力する。`-o` も `--site` もなければ標準出力に書く |
 | `check` | `collect` と同じ走査をして、error 級の違反（active 系列の fix 未伝播、依存違反、理由のない除外）があれば終了コード 1。`-o` / `--site` を付ければ JSON も出力する |
+| `lint-pr` | PR のコミット（`<系列のブランチ>..<--head>`、マージコミットを除く）の規約チェック。Fix-ID の書式・位置と、mainline 以外の系列への移植に `cherry-pick -x` の記録があるかを見る（下表）。error があれば終了コード 1（`--strict` なら warning も）。JSON は出力しない |
 
 | オプション | 説明 |
 |---|---|
@@ -81,7 +84,18 @@ release-viewer check   <repo> [collect と同じオプション] [--strict] [--s
 | `--strict` | `check` のみ。warning（patch-id のみ一致、maintenance 系列の未伝播など）も失敗扱いにする |
 | `--series` | `check` のみ。終了コードの判定（と標準エラーの一覧）を、指定した系列に紐づく違反に絞る。繰り返し可。系列に紐づかない違反（設定エラー、タグ・コミット単位の警告など）は常に対象。JSON の `violations` / `summary` は絞り込まない |
 
-終了コードは、`0` が成功、`1` が `check` で違反あり、`2` が設定・引数・git のエラーです。想定外の例外（`git` が見つからない等）も traceback を標準エラーに出して `2` で終えます。
+`lint-pr` が検査する内容：
+
+| kind | 重大度 | 条件 |
+|---|---|---|
+| `invalid_fix_id` | error | Fix-ID の値が `fix_id_pattern` に合わない |
+| `fix_id_not_trailer` | warning | Fix-ID がトレーラーの位置にない（§5.1） |
+| `cherry_pick_without_x` | error | 宛先が mainline 以外で、Fix-ID を持つのに `(cherry picked from commit <sha>)` がない |
+| `cherry_pick_source_missing` | error | `-x` の記録にある sha がリポジトリに存在しない |
+
+Fix-ID も `-x` の記録もないコミット（バージョン更新など）は対象外です。mainline 宛の PR は squash merge されるので `-x` を求めません。
+
+終了コードは、`0` が成功、`1` が `check`・`lint-pr` で違反あり、`2` が設定・引数・git のエラーです。想定外の例外（`git` が見つからない等）も traceback を標準エラーに出して `2` で終えます。
 
 走査するのは `config.toml` に書いた系列のブランチから到達できるコミットと、`[repository].tag_pattern`（既定 `<prefix>/v<semver>`）に合うタグだけです（`--all` は使いません）。
 
@@ -124,6 +138,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Lint PR commits
+        working-directory: viewer
+        run: python -m release_viewer lint-pr ../fw --series "${{ github.base_ref }}"
       - name: Gate (merged state of the target series)
         working-directory: viewer
         run: >-
@@ -132,6 +149,7 @@ jobs:
           --series "${{ github.base_ref }}"
 ```
 
+- `lint-pr` は `origin/<宛先>..HEAD`（マージコミットを除く）、つまり PR のコミットだけを検査します。
 - `pull_request` では `refs/pull/N/merge`（PR を宛先ブランチにマージした結果）が detached HEAD として checkout されます。`--override <宛先>=HEAD` で、宛先の系列をその状態に置き換えて評価します。
 - `--series <宛先>` で、終了コードの判定をその系列に関する違反（マージ後ツリーの依存違反など）に絞ります。系列に紐づかない違反（設定エラー等）は常に判定に含みます。
 - 宛先が `config.toml` に定義された系列でないと `--override` / `--series` が終了コード 2 になるので、`branches:` は追跡している系列に合わせて限定してください。

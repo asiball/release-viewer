@@ -3,8 +3,9 @@
 サブコマンド:
     collect  走査して data.json / data.js（--site なら画面一式）を出力する
     check    collect と同じ走査をして、違反があれば終了コード 1（CIゲート用）
+    lint-pr  PR のコミット（系列のブランチ..HEAD）の規約チェック。違反があれば終了コード 1
 
-終了コード: 0 = 成功 / 1 = check で違反あり / 2 = 設定・引数・git のエラー、想定外の例外
+終了コード: 0 = 成功 / 1 = check・lint-pr で違反あり / 2 = 設定・引数・git のエラー、想定外の例外
 """
 
 from __future__ import annotations
@@ -19,6 +20,7 @@ from pathlib import Path
 from .collect import Collector
 from .config import ConfigError
 from .gitcmd import GitError
+from .lintpr import lint_pr
 
 WEB_ASSETS = ("index.html", "app.js", "style.css")
 
@@ -42,8 +44,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
     ap = argparse.ArgumentParser(prog="release-viewer",
                                  description="リリース系列・hotfix伝播・依存制約を走査して可視化用JSONを出力する",
-                                 epilog="終了コード: 0 = 成功 / 1 = check で違反あり / 2 = 設定・引数・git のエラー")
-    sub = ap.add_subparsers(dest="command", required=True, metavar="{collect,check}")
+                                 epilog="終了コード: 0 = 成功 / 1 = check・lint-pr で違反あり / 2 = 設定・引数・git のエラー")
+    sub = ap.add_subparsers(dest="command", required=True, metavar="{collect,check,lint-pr}")
     sub.add_parser("collect", parents=[common], help="走査して JSON を出力する（-o も --site もなければ標準出力）",
                    description="走査して data.json / data.js を出力する。-o も --site もなければ JSON を標準出力に書く")
     check = sub.add_parser("check", parents=[common], help="走査して、error 級の違反があれば終了コード 1",
@@ -52,6 +54,18 @@ def _build_parser() -> argparse.ArgumentParser:
     check.add_argument("--strict", action="store_true", help="warning も違反として扱う")
     check.add_argument("--series", action="append", metavar="ID",
                        help="終了コードの判定をこの系列の違反に絞る（系列に紐づかない違反は常に対象）。繰り返し可")
+
+    lint = sub.add_parser("lint-pr", help="PR のコミットの規約チェック。違反があれば終了コード 1",
+                          description="系列のブランチ..HEAD（マージコミットを除く）の各コミットについて、"
+                                      "Fix-ID の書式・位置と、mainline 以外への移植の cherry-pick -x の記録を検査する")
+    lint.add_argument("repo", type=Path, help="検査するgitリポジトリ")
+    lint.add_argument("--series", required=True, metavar="ID", help="PR の宛先の系列")
+    lint.add_argument("--head", default="HEAD", help="PR の先頭（既定: HEAD。pull_request では refs/pull/N/merge）")
+    lint.add_argument("--strict", action="store_true", help="warning も違反として扱う")
+    lint.add_argument("--config-ref", default="main", help="設定（.release/）を読むref（既定: main）")
+    lint.add_argument("--config-dir", type=Path,
+                      help="設定（config.toml, exclusions.toml）をリポジトリではなくこのディレクトリから読む")
+    lint.add_argument("--remote", default="origin", help="ローカルブランチがないとき参照するリモート名（既定: origin）")
     return ap
 
 
@@ -68,7 +82,8 @@ def main(argv: list[str] | None = None) -> int:
     sys.stderr.reconfigure(encoding="utf-8")
     ap = _build_parser()
     args = ap.parse_args(argv)
-    if len({s for s, _ in args.override}) != len(args.override):
+    overrides = getattr(args, "override", [])
+    if len({s for s, _ in overrides}) != len(overrides):
         ap.error("--override で同じ系列が複数回指定されている")
     try:
         return _run(args)
@@ -82,6 +97,8 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _run(args: argparse.Namespace) -> int:
+    if args.command == "lint-pr":
+        return _lint_pr(args)
     data = Collector(args.repo, config_ref=args.config_ref, config_dir=args.config_dir,
                      remote=args.remote, since_ref=args.since_ref, name=args.name,
                      overrides=dict(args.override)).collect()
@@ -117,6 +134,18 @@ def _run(args: argparse.Namespace) -> int:
         print(line, file=sys.stderr)
         return 1 if failing else 0
     return 0
+
+
+def _lint_pr(args: argparse.Namespace) -> int:
+    findings, n = lint_pr(args.repo, series=args.series, head=args.head, config_ref=args.config_ref,
+                          config_dir=args.config_dir, remote=args.remote)
+    for f in findings:
+        print(f"{f['severity'].upper()}: [{f['kind']}] {f['commit'][:10]} {f['subject']}: {f['message']}",
+              file=sys.stderr)
+    errors = sum(f["severity"] == "error" for f in findings)
+    warnings = len(findings) - errors
+    print(f"errors={errors} warnings={warnings} commits={n}", file=sys.stderr)
+    return 1 if errors or (args.strict and warnings) else 0
 
 
 def _write_data(path: Path, text: str) -> None:

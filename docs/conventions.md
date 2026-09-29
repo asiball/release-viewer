@@ -217,6 +217,8 @@ release-viewer collect <repo> [-o data.json] [--site DIR] [--config-ref main] [-
                               [--remote origin] [--since-ref REF] [--name NAME]
                               [--override SERIES=REF ...]
 release-viewer check   <repo> [collect と同じオプション] [--strict] [--series ID ...]
+release-viewer lint-pr <repo> --series ID [--head HEAD] [--strict] [--config-ref main] [--config-dir DIR]
+                              [--remote origin]
 ```
 - `python -m release_viewer …` でも同じ。
 - 出力：`data.json` と、同内容を `window.RELEASE_DATA = …` で包んだ `data.js`
@@ -233,6 +235,19 @@ release-viewer check   <repo> [collect と同じオプション] [--strict] [--s
   定義済みの系列に紐づかない違反（設定エラー、タグ・コミット単位の警告など）は絞り込まず常に対象にする。
   JSON の `violations` / `summary` は絞り込まない。未定義の系列 ID は終了コード `2`。
   PR ゲート（`--override <宛先>=HEAD --series <宛先>`）と、伝播先系列のリリース前のゲートに使う。
+- `lint-pr --series ID` は PR のコミットの規約チェック。対象は `<系列のブランチ>..<--head（既定 HEAD）>` の
+  マージコミットを除くコミット（系列のブランチは `check` と同じくローカル → `refs/remotes/<remote>/` の順に探す）。
+  各コミットの Fix-ID は §5.1 と同じ方法で読み、次を検出する。Fix-ID も `-x` の記録もないコミットは対象外。
+
+  | kind | 重大度 | 条件 |
+  |---|---|---|
+  | `invalid_fix_id` | error | 値が `fix_id_pattern` に合わない |
+  | `fix_id_not_trailer` | warning | Fix-ID がトレーラーの位置にない |
+  | `cherry_pick_without_x` | error | 系列の `kind` が `mainline` 以外で、Fix-ID を持つのに `(cherry picked from commit <sha>)` がない（mainline 宛は squash merge されるので求めない） |
+  | `cherry_pick_source_missing` | error | `-x` の記録にある sha がリポジトリに存在しない |
+
+  出力は標準エラーに1件1行（`ERROR: [kind] <sha10> <件名>: <説明>`）と `errors=… warnings=… commits=…`。JSON は出さない。
+  終了コードは `0`／`1`（error あり、`--strict` なら warning も）／`2`（引数・設定・git のエラー、系列が未定義、ref が解決できない）。
 - 終了コード：`0` 成功／`1` `check` で error 級の違反あり（`fix_missing`, `dependency_violation` ほか）／
   `2` 設定・引数・git のエラー、および想定外の例外（traceback を標準エラーに出す。`git` が見つからない場合を含む）。
   `check` では警告（`patch_id_only` 等）は `--strict` 指定時のみ `1` にする。`--strict` は `check` にしかない。
