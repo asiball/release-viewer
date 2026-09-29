@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Release Viewer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="top">
+  <div class="title">
+    <h1>Release Viewer</h1>
+    <span id="repo-meta"></span>
+  </div>
+  <nav id="tabs">
+    <a href="#/tree" data-view="tree">系列ツリー</a>
+    <a href="#/matrix" data-view="matrix">hotfixマトリクス</a>
+    <a href="#/release" data-view="release">リリース詳細</a>
+    <a href="#/deps" data-view="deps">依存チェック</a>
+    <a href="#/search" data-view="search">検索</a>
+  </nav>
+  <button id="violations-toggle" type="button" hidden></button>
+</header>
+<section id="violations" hidden></section>
+<main id="view">
+  <div id="loader">
+    <p>data.js が見つかりません。コレクタが出力した <code>data.json</code> を選択するか、ここにドロップしてください。</p>
+    <input type="file" id="file" accept=".json,application/json">
+    <p id="load-error" class="error"></p>
+  </div>
+</main>
+<aside id="panel" hidden></aside>
+<script src="data.js" onerror="void 0"></script>
+<script src="app.js"></script>
+</body>
+</html>

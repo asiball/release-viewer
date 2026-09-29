@@ -1,0 +1,68 @@
+name: sample → collect → Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependency
+        run: pip install pytest
+
+      - name: Test (collector logic against a freshly generated sample repo)
+        run: python -m pytest -q
+
+      - name: Generate sample repository
+        run: python sample/generate_sample_repo.py build/sample-fw
+
+      - name: Collect
+        run: |
+          # generated_at をツール側のコミット時刻に固定し、同じ入力なら同じ JSON にする
+          export SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)"
+          python -m release_collect build/sample-fw -o _site/data.json --name sample-fw
+
+      # サンプルには意図的な違反があるので、--check が 1 で終わることを確認する（CIゲートの動作確認）
+      - name: Gate behaves as expected
+        run: |
+          set +e
+          python -m release_collect build/sample-fw -o /tmp/gate.json --check
+          code=$?
+          test "$code" -eq 1 || { echo "expected exit 1, got $code"; exit 1; }
+
+      - name: Assemble site
+        run: cp web/* _site/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
