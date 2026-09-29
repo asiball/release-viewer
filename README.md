@@ -100,14 +100,50 @@ release-viewer check   <repo> [collect と同じオプション] [--strict] [--s
 
 コンポーネントのディレクトリ・メタファイル名・タグ書式・Fix-ID トレーラーが既定と違う場合は、`config.toml` の `[repository]` で指定します（docs/conventions.md §4）。
 
-### 2. FWリポジトリ側の GitHub Actions（CIゲート＋Pages）
+### 2. FWリポジトリ側の GitHub Actions（PR ゲート＋Pages）
+
+#### PR ゲート
+
+```yaml
+name: release-viewer-pr
+on:
+  pull_request:
+    branches: [main, "release/**", "customer/**"]   # 宛先が系列のブランチの PR だけ
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0            # 全ブランチ・タグの履歴が必要。HEAD は refs/pull/N/merge（マージ後の状態）
+          path: fw
+      - uses: actions/checkout@v4
+        with:
+          repository: <owner>/poc-release-viewer
+          path: viewer
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Gate (merged state of the target series)
+        working-directory: viewer
+        run: >-
+          python -m release_viewer check ../fw
+          --override "${{ github.base_ref }}=HEAD"
+          --series "${{ github.base_ref }}"
+```
+
+- `pull_request` では `refs/pull/N/merge`（PR を宛先ブランチにマージした結果）が detached HEAD として checkout されます。`--override <宛先>=HEAD` で、宛先の系列をその状態に置き換えて評価します。
+- `--series <宛先>` で、終了コードの判定をその系列に関する違反（マージ後ツリーの依存違反など）に絞ります。系列に紐づかない違反（設定エラー等）は常に判定に含みます。
+- 宛先が `config.toml` に定義された系列でないと `--override` / `--series` が終了コード 2 になるので、`branches:` は追跡している系列に合わせて限定してください。
+- PR が `.release/config.toml` や `exclusions.toml` 自体を変更する場合は、`--config-ref HEAD` も渡してマージ後の設定で評価してください（既定は `main` の設定を読みます）。
+
+#### main への push で Pages 公開＋全体チェック
 
 ```yaml
 name: release-viewer
 on:
   push:
     branches: [main, "release/**", "customer/**"]
-  pull_request:
 jobs:
   collect:
     runs-on: ubuntu-latest
@@ -133,7 +169,7 @@ jobs:
   # deploy ジョブは本リポジトリの .github/workflows/pages.yml と同じ（actions/deploy-pages）
 ```
 
-- **注意**：コレクタが評価するのは追跡ブランチの現状です。PR で実行しても「その PR をマージした後の状態」は評価しないため、PR 単位のゲートにはなりません（現状の違反を検出するだけ）。PR ゲートにするには、ブランチをマージ後のコミットに置き換えて評価する機能の追加が必要です。
+- **PR ゲートが見るのは、依存違反とその系列に関する違反です。** hotfix の未伝播は、起点の系列ではなく伝播先の系列の違反（`fix_missing`）として出ます。このため起点への PR では検出されません。伝播先の系列をリリースする前に `check --series <その系列>` を通してください（リリースゲート）。
 - `actions/checkout` で `fetch-depth: 0` にすると、系列ブランチは `refs/remotes/origin/<branch>` として取得されます。コレクタはローカルブランチが見つからなければ、自動的にこちらを参照します。
 - `check --site` は違反があってもサイトを出力してから終了コード 1 で終わります。違反があっても画面は公開したい場合は、上の例のように `if: always()` でアップロードしてください。
 - 設定をFWリポジトリにコミットしたくない場合は、`--config-dir` で別の場所から渡せます。

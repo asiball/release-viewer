@@ -215,7 +215,8 @@ lib-comm = ">=1.4.1"
 ```
 release-viewer collect <repo> [-o data.json] [--site DIR] [--config-ref main] [--config-dir DIR]
                               [--remote origin] [--since-ref REF] [--name NAME]
-release-viewer check   <repo> [collect と同じオプション] [--strict]
+                              [--override SERIES=REF ...]
+release-viewer check   <repo> [collect と同じオプション] [--strict] [--series ID ...]
 ```
 - `python -m release_viewer …` でも同じ。
 - 出力：`data.json` と、同内容を `window.RELEASE_DATA = …` で包んだ `data.js`
@@ -223,6 +224,15 @@ release-viewer check   <repo> [collect と同じオプション] [--strict]
   `--site DIR` は DIR に `data.json`・`data.js` と画面（`index.html`, `app.js`, `style.css`）を揃える。
   `collect` で `-o` も `--site` もなければ JSON を標準出力に書く。
 - `--config-dir DIR` は `DIR/config.toml` と `DIR/exclusions.toml` を読む。
+- `--override SERIES=REF`（繰り返し可）は、系列 SERIES の HEAD をブランチではなく REF（`git rev-parse` で解決できる
+  任意の committish。`HEAD` や SHA を含む）にして走査する。分岐点・スナップショット・依存チェック等は差し替え後の HEAD で行う。
+  PR ゲートで `refs/pull/N/merge`（マージ後の状態）を宛先系列として評価するためのもの。設定は引き続き `--config-ref` から読む。
+  `=` がない、系列が未定義、REF が解決できない場合は終了コード `2`。出力では `series[].ref` が REF の文字列、
+  `repository.overrides` に指定が入る（§11）。
+- `check --series ID`（繰り返し可）は、終了コードと標準エラーの一覧を、`refs.series` が指定系列の違反に絞る。
+  定義済みの系列に紐づかない違反（設定エラー、タグ・コミット単位の警告など）は絞り込まず常に対象にする。
+  JSON の `violations` / `summary` は絞り込まない。未定義の系列 ID は終了コード `2`。
+  PR ゲート（`--override <宛先>=HEAD --series <宛先>`）と、伝播先系列のリリース前のゲートに使う。
 - 終了コード：`0` 成功／`1` `check` で error 級の違反あり（`fix_missing`, `dependency_violation` ほか）／
   `2` 設定・引数・git のエラー、および想定外の例外（traceback を標準エラーに出す。`git` が見つからない場合を含む）。
   `check` では警告（`patch_id_only` 等）は `--strict` 指定時のみ `1` にする。`--strict` は `check` にしかない。
