@@ -55,13 +55,16 @@ class ResolvedSeries:
 
 class Collector:
     def __init__(self, repo: Path | str, *, config_ref: str = "main", config_dir: Path | None = None,
-                 remote: str = "origin", since_ref: str | None = None, name: str | None = None):
+                 remote: str = "origin", since_ref: str | None = None, name: str | None = None,
+                 overrides: dict[str, str] | None = None):
         self.repo = Path(repo)
         self.git = Git(repo)
         self.config_ref = config_ref
         self.config_dir = config_dir
         self.remote = remote
         self.since_ref = since_ref
+        # 系列ID -> ref。系列の HEAD をブランチではなくこの ref にして走査する（PR のマージ後の評価用）
+        self.overrides = dict(overrides or {})
         self.name = name or self.repo.resolve().name
         self.violations: list[dict] = []
         self._snapshot_cache: dict[str, dict[str, dict]] = {}
@@ -103,11 +106,19 @@ class Collector:
     # ------------------------------------------------------------------ 系列
     def _resolve_series(self) -> None:
         by_id = self.config.series_by_id()
+        unknown = sorted(set(self.overrides) - set(by_id))
+        if unknown:
+            raise ConfigError(f"--override の系列が定義されていない: {', '.join(unknown)}")
         self.series: dict[str, ResolvedSeries] = {}
         for s in self.config.series:
-            ref = self.git.resolve_branch(s.branch, self.remote)
-            if ref is None:
-                raise ConfigError(f"系列のブランチが見つからない: {s.branch}")
+            if s.id in self.overrides:
+                ref = self.overrides[s.id]
+                if self.git.resolve_commit(ref) is None:
+                    raise ConfigError(f"--override {s.id}={ref} の ref が見つからない")
+            else:
+                ref = self.git.resolve_branch(s.branch, self.remote)
+                if ref is None:
+                    raise ConfigError(f"系列のブランチが見つからない: {s.branch}")
             depth, cur = 0, s
             while cur.parent is not None:
                 depth += 1
@@ -458,7 +469,8 @@ class Collector:
             "generated_at": now.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
             "generator": {"name": "release-viewer", "version": __version__},
             "repository": {"name": self.name, "config_ref": None if self.config_dir else self.config_ref,
-                           "config_commit": config_commit, "since_ref": self.since_ref},
+                           "config_commit": config_commit, "since_ref": self.since_ref,
+                           "overrides": dict(sorted(self.overrides.items()))},
             "components": [{"name": n, "path": f"{self.config.repository.component_dir}/{n}"}
                            for n in sorted(components)],
             "series": series_out,

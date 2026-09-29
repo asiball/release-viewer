@@ -37,6 +37,8 @@ def _build_parser() -> argparse.ArgumentParser:
                         help="ローカルブランチがないとき参照するリモート名（既定: origin）")
     common.add_argument("--since-ref", help="このrefの祖先を走査しない（大規模リポジトリ向け）")
     common.add_argument("--name", help="表示用のリポジトリ名（既定: ディレクトリ名）")
+    common.add_argument("--override", action="append", default=[], type=_override, metavar="SERIES=REF",
+                        help="系列の HEAD をブランチではなく REF（HEAD や SHA も可）にして走査する。繰り返し可")
 
     ap = argparse.ArgumentParser(prog="release-viewer",
                                  description="リリース系列・hotfix伝播・依存制約を走査して可視化用JSONを出力する",
@@ -51,11 +53,21 @@ def _build_parser() -> argparse.ArgumentParser:
     return ap
 
 
+def _override(text: str) -> tuple[str, str]:
+    series, sep, ref = text.partition("=")
+    if not (sep and series and ref):
+        raise argparse.ArgumentTypeError(f"SERIES=REF の形で指定する: {text!r}")
+    return series, ref
+
+
 def main(argv: list[str] | None = None) -> int:
     # Windows ではコンソールの既定が cp932 になるため、日本語のメッセージを UTF-8 で書く
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
-    args = _build_parser().parse_args(argv)
+    ap = _build_parser()
+    args = ap.parse_args(argv)
+    if len({s for s, _ in args.override}) != len(args.override):
+        ap.error("--override で同じ系列が複数回指定されている")
     try:
         return _run(args)
     except (ConfigError, GitError) as e:
@@ -69,7 +81,8 @@ def main(argv: list[str] | None = None) -> int:
 
 def _run(args: argparse.Namespace) -> int:
     data = Collector(args.repo, config_ref=args.config_ref, config_dir=args.config_dir,
-                     remote=args.remote, since_ref=args.since_ref, name=args.name).collect()
+                     remote=args.remote, since_ref=args.since_ref, name=args.name,
+                     overrides=dict(args.override)).collect()
 
     text = json.dumps(data, ensure_ascii=False, indent=1)
     if args.output:

@@ -245,13 +245,15 @@ release-viewer check   <repo> [collect と同じオプション] [--strict]
     "name": "sample-fw",
     "config_ref": "main",                          // --config-dir 使用時は null
     "config_commit": "<sha>",
-    "since_ref": null
+    "since_ref": null,
+    "overrides": { "release/1.2": "HEAD" }         // --override の指定（系列ID -> ref）。なければ {}
   },
 
   "components": [ { "name": "hal", "path": "components/hal" } ],   // path は [repository].component_dir 基準
 
   "series": [
     {
+      // ref: 走査に使った参照。--override した系列は指定した ref の文字列そのまま（head はその解決結果）
       "id": "release/1.2", "branch": "release/1.2", "ref": "refs/heads/release/1.2",
       "kind": "release", "parent": "main", "customer": null, "label": null,
       "status": "active", "tag_prefix": "fw/",
@@ -319,7 +321,7 @@ release-viewer check   <repo> [collect と同じオプション] [--strict]
   "dependency_checks": [
     {
       "series": "customer/beta/1.1",
-      "at": { "kind": "head", "ref": "customer/beta/1.1", "commit": "<sha>" },  // kind: head | tag
+      "at": { "kind": "head", "ref": "customer/beta/1.1", "commit": "<sha>" },  // kind: head | tag。head の ref は --override してもブランチ名
       "ok": false,
       "results": [
         { "component": "app", "dependency": "hal", "constraint": ">=1.2.0, <2.0.0",

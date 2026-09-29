@@ -9,7 +9,8 @@
   "name": "sample-fw",
   "config_ref": "main",
   "config_commit": "cd9223d216e32b130944660f80fb28d37572b239",
-  "since_ref": null
+  "since_ref": null,
+  "overrides": {}
  },
  "components": [
   {
