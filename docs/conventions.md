@@ -117,7 +117,18 @@ hal: I2C タイムアウト時にバスをリセットする
 Fix-ID: FIX-123
 ```
 - 書式：`Fix-ID: <PREFIX>-<number>`（正規表現 `^[A-Z][A-Z0-9]*-\d+$`）。1コミットに複数行可。
-- 読み取りは `git log --format=%(trailers:key=Fix-ID,valueonly)` で行い、本文中の似た文字列は拾わない。
+  1行に複数書く場合はカンマか空白で区切る（`Fix-ID: FIX-21, FIX-22`）。
+- 規則：メッセージの**最後の段落**（直前が空行）に、`Fix-ID: ...` を含むトレーラー行だけを並べる。
+  git のトレーラー規則（`git interpret-trailers`）どおりの位置に置くと、`git log --format=%(trailers:key=Fix-ID)` で読める。
+- 読み取り：
+  1. git のトレーラーとして取れた値（`%(trailers:key=Fix-ID,valueonly)`）を第一とする。
+  2. あわせてメッセージ全文を行ごとに見て、`^\s*Fix-ID\s*:\s*(.+)$`（キーの大文字・小文字は区別しない）の行の値も拾う。
+     次のようにトレーラーとして認識されない位置の Fix-ID を黙って捨てないためである。
+     - 直前に空行がない（`本文。` の次の行に `Fix-ID: FIX-20`）
+     - 後ろに本文が続く（`Fix-ID: FIX-23` の後に空行と補足、PR テンプレートのチェックリスト等）
+  3. 2 でしか取れなかった値も Fix-ID として採用するが、そのコミットに警告 `fix_id_not_trailer` を1件出す。
+  4. 書式（`fix_id_pattern`）に合わない値は採用せず、警告 `invalid_fix_id` を出す。
+- 行走査は `Fix-ID:` で始まる行をすべて拾う。本文中で例として書いた `Fix-ID: ...` の行も対象になるので、行頭に書かないこと。
 - 1つの fix が複数コミットにまたがる場合は、全コミットに同じ Fix-ID を付ける。系列に1つでもあれば「適用済み」とはせず、**全コミットの対応が取れた場合のみ適用済み**とする。
 
 ### 5.2 `cherry-pick -x` の扱い
@@ -315,7 +326,8 @@ release-viewer check   <repo> [collect と同じオプション] [--strict]
       "kind": "fix_missing",
       // error:   fix_missing(active) | dependency_violation | exclusion_without_reason
       // warning: fix_missing(maintenance) | patch_id_only | exclusion_but_applied | stale_exclusion
-      //          | tag_version_mismatch | lightweight_tag | invalid_tag | invalid_fix_id | invalid_component_meta
+      //          | tag_version_mismatch | lightweight_tag | invalid_tag | invalid_fix_id | fix_id_not_trailer
+      //          | invalid_component_meta
       "severity": "error",
       "message": "FIX-123 が release/1.1 に未適用",
       "refs": { "fix": "FIX-123", "series": "release/1.1" }   // fix / series / tag / component / ref / commit

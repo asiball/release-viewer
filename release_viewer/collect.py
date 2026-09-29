@@ -16,7 +16,7 @@ from pathlib import Path
 from . import __version__
 from .config import ConfigError, Series, load_config
 from .deps import check_dependencies
-from .fixid import fix_sort_key, trailer_values
+from .fixid import fix_sort_key, parse_fix_ids
 from .gitcmd import Git
 from .propagation import FixEvaluator
 from .semver import Version, VersionError
@@ -134,13 +134,14 @@ class Collector:
         for rec in records:
             f = rec.split("\x1f")
             sha, parents, author, date, subject, trailers, body, paths = f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]
-            fix_ids = []
-            for value in trailer_values(trailers):
-                if repo.fix_id_pattern.match(value):
-                    fix_ids.append(value)
-                else:
-                    self._violation("invalid_fix_id", "warning",
-                                    f"{sha[:10]} の {repo.fix_id_trailer} が書式に合わない: {value!r}", commit=sha)
+            fix_ids, invalid, not_trailer = parse_fix_ids(trailers, body, repo.fix_id_trailer, repo.fix_id_pattern)
+            for value in invalid:
+                self._violation("invalid_fix_id", "warning",
+                                f"{sha[:10]} の {repo.fix_id_trailer} が書式に合わない: {value!r}", commit=sha)
+            if not_trailer:
+                self._violation("fix_id_not_trailer", "warning",
+                                f"{sha[:10]} の {repo.fix_id_trailer}（{', '.join(not_trailer)}）が"
+                                f"トレーラーとして認識されない位置にある", commit=sha)
             comps = sorted({p[len(comp_prefix):].split("/")[0] for p in paths.split("\n")
                             if p.startswith(comp_prefix) and "/" in p[len(comp_prefix):]})
             self.commits[sha] = Commit(

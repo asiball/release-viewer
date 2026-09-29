@@ -89,6 +89,10 @@ release-viewer check   <repo> [collect と同じオプション] [--strict]
 - 各コンポーネントに `components/<name>/component.toml` を置き、`version` と `[dependencies]` を書く
 - コンポーネントのリリースタグは `<component>/v<semver>`（注釈付き）で付ける。製品リリースタグは `<tag_prefix>v<semver>` で付ける
 - hotfix の元コミットに `Fix-ID: FIX-123` トレーラーを付け、各系列へは `git cherry-pick -x` で配る
+- main への PR を squash merge する場合は、GitHub のリポジトリ設定（Settings → General → Pull Requests →
+  Allow squash merging → Default commit message）を **"Pull request title and description"** にし、`Fix-ID:` は PR 本文の末尾に書く。
+  "Default message" や "Pull request title and commit details" だと PR 本文がコミットメッセージに入らず、Fix-ID が失われる。
+  PR テンプレートのチェックリスト等が後ろに付いてトレーラーの位置から外れた場合も Fix-ID は拾うが、警告 `fix_id_not_trailer` が出る
 - main に `.release/config.toml`（リポジトリ構成と追跡する系列）と `.release/exclusions.toml`（対象外の宣言、理由は必須）を置く
 
 コンポーネントのディレクトリ・メタファイル名・タグ書式・Fix-ID トレーラーが既定と違う場合は、`config.toml` の `[repository]` で指定します（docs/conventions.md §4）。
