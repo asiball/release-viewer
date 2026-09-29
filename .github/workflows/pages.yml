@@ -28,7 +28,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install test dependencies
-        run: pip install pytest ruff
+        run: pip install pytest ruff==0.16.9
 
       - name: Lint
         run: ruff check .

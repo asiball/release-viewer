@@ -34,7 +34,7 @@ python -m release_viewer collect build/sample-fw --site build/site
 テスト：
 
 ```sh
-pip install pytest ruff
+pip install pytest ruff==0.16.9
 python -m pytest -q
 ruff check .
 ```
