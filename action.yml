@@ -1,0 +1,24 @@
+name: release-viewer
+description: モノレポのリリース系列・hotfix伝播・依存制約を検査し、可視化用のサイトを出力する
+
+inputs:
+  args:
+    description: release-viewer に渡す引数（例 "check . --site _site"、"lint-pr . --series main"）
+    required: true
+  python-version:
+    description: 使う Python のバージョン（3.11 以上）
+    required: false
+    default: "3.12"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Install release-viewer
+      shell: bash
+      run: pip install --quiet "${{ github.action_path }}"
+    - name: Run release-viewer
+      shell: bash
+      run: release-viewer ${{ inputs.args }}

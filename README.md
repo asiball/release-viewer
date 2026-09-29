@@ -18,6 +18,7 @@
 | `release_viewer/web/` | 画面（静的 HTML/JS/CSS、ビルド不要）。`--site` で data.json と一緒に出力される |
 | `tests/` | pytest（生成したサンプルリポジトリを入力に、伝播判定・依存チェックなどを検証）。`tests/golden/data.json` は出力のゴールデン |
 | `.github/workflows/pages.yml` | テスト（Ubuntu / Windows）→ サンプル生成 → 収集 → GitHub Pages へのデプロイ |
+| `action.yml` | composite action（FW リポジトリの workflow から `uses: <owner>/release-viewer@v1` で呼ぶ） |
 
 git の操作は `git` コマンドを subprocess で呼んでいます。`git patch-id --stable` とトレーラー解析（`%(trailers)`）を git 本体と同じ解釈で使えるためです。pygit2 には patch-id の互換実装がないうえネイティブ依存が増え、GitPython は内部で git CLI を呼ぶだけなので得るものが少ないと判断しました。
 
@@ -99,7 +100,7 @@ Fix-ID も `-x` の記録もないコミット（バージョン更新など）�
 
 走査するのは `config.toml` に書いた系列のブランチから到達できるコミットと、`[repository].tag_pattern`（既定 `<prefix>/v<semver>`）に合うタグだけです（`--all` は使いません）。
 
-## 実リポジトリに適用する
+## 導入手順
 
 ### 1. 規約を入れる（詳細は docs/conventions.md）
 
@@ -114,7 +115,18 @@ Fix-ID も `-x` の記録もないコミット（バージョン更新など）�
 
 コンポーネントのディレクトリ・メタファイル名・タグ書式・Fix-ID トレーラーが既定と違う場合は、`config.toml` の `[repository]` で指定します（docs/conventions.md §4）。
 
-### 2. FWリポジトリ側の GitHub Actions（PR ゲート＋Pages）
+### 2. GitHub Actions から使う（推奨）
+
+本リポジトリは composite action（`action.yml`）として使えます。`uses: <owner>/release-viewer@v1` で呼ぶと、
+Python の準備と `pip install` をしたうえで `release-viewer <args>` を実行します。
+
+| input | 説明 |
+|---|---|
+| `args` | 必須。`release-viewer` に渡す引数をそのまま書く（例 `check . --site _site`） |
+| `python-version` | 使う Python（既定 `"3.12"`、3.11 以上） |
+
+FW リポジトリの checkout は `fetch-depth: 0`（全ブランチ・タグの履歴）にしてください。
+系列ブランチは `refs/remotes/origin/<branch>` として取得され、コレクタはローカルブランチが見つからなければ自動的にこちらを参照します。
 
 #### PR ゲート
 
@@ -130,32 +142,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0            # 全ブランチ・タグの履歴が必要。HEAD は refs/pull/N/merge（マージ後の状態）
-          path: fw
-      - uses: actions/checkout@v4
-        with:
-          repository: <owner>/poc-release-viewer
-          path: viewer
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
       - name: Lint PR commits
-        working-directory: viewer
-        run: python -m release_viewer lint-pr ../fw --series "${{ github.base_ref }}"
+        uses: <owner>/release-viewer@v1
+        with:
+          args: lint-pr . --series "${{ github.base_ref }}"
       - name: Gate (merged state of the target series)
-        working-directory: viewer
-        run: >-
-          python -m release_viewer check ../fw
-          --override "${{ github.base_ref }}=HEAD"
-          --series "${{ github.base_ref }}"
+        uses: <owner>/release-viewer@v1
+        with:
+          args: check . --override "${{ github.base_ref }}=HEAD" --series "${{ github.base_ref }}"
 ```
 
 - `lint-pr` は `origin/<宛先>..HEAD`（マージコミットを除く）、つまり PR のコミットだけを検査します。
 - `pull_request` では `refs/pull/N/merge`（PR を宛先ブランチにマージした結果）が detached HEAD として checkout されます。`--override <宛先>=HEAD` で、宛先の系列をその状態に置き換えて評価します。
 - `--series <宛先>` で、終了コードの判定をその系列に関する違反（マージ後ツリーの依存違反など）に絞ります。系列に紐づかない違反（設定エラー等）は常に判定に含みます。
-- 宛先が `config.toml` に定義された系列でないと `--override` / `--series` が終了コード 2 になるので、`branches:` は追跡している系列に合わせて限定してください。
-- PR が `.release/config.toml` や `exclusions.toml` 自体を変更する場合は、`--config-ref HEAD` も渡してマージ後の設定で評価してください（既定は `main` の設定を読みます）。
+- 宛先が `config.toml` に定義された系列でないと終了コード 2 になるので、`branches:` は追跡している系列に合わせて限定してください。
+- PR が `.release/config.toml` や `exclusions.toml` 自体を変更する場合は、`check` に `--config-ref HEAD` も渡してマージ後の設定で評価してください（既定は `main` の設定を読みます）。
 
-#### main への push で Pages 公開＋全体チェック
+#### Pages 公開＋全体チェック
 
 ```yaml
 name: release-viewer
@@ -169,17 +172,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0            # 全ブランチ・タグの履歴が必要
-          path: fw
-      - uses: actions/checkout@v4
-        with:
-          repository: <owner>/poc-release-viewer
-          path: viewer
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
       - name: Collect & gate
-        working-directory: viewer
-        run: python -m release_viewer check ../fw --site ../_site
+        uses: <owner>/release-viewer@v1
+        with:
+          args: check . --site _site
       - uses: actions/upload-pages-artifact@v3
         if: always() && github.ref == 'refs/heads/main'
         with:
@@ -188,9 +184,19 @@ jobs:
 ```
 
 - **PR ゲートが見るのは、依存違反とその系列に関する違反です。** hotfix の未伝播は、起点の系列ではなく伝播先の系列の違反（`fix_missing`）として出ます。このため起点への PR では検出されません。伝播先の系列をリリースする前に `check --series <その系列>` を通してください（リリースゲート）。
-- `actions/checkout` で `fetch-depth: 0` にすると、系列ブランチは `refs/remotes/origin/<branch>` として取得されます。コレクタはローカルブランチが見つからなければ、自動的にこちらを参照します。
 - `check --site` は違反があってもサイトを出力してから終了コード 1 で終わります。違反があっても画面は公開したい場合は、上の例のように `if: always()` でアップロードしてください。
 - 設定をFWリポジトリにコミットしたくない場合は、`--config-dir` で別の場所から渡せます。
+
+メンテナ向け：`v1` は移動タグとして運用します（互換性を壊さないリリースのたびに `v1` を最新のリリースに付け替える。破壊的変更は `v2`）。
+
+### 3. CLI を pip で入れる（代替：ローカルや他の CI）
+
+```sh
+pip install "git+https://github.com/<owner>/release-viewer@v1"
+release-viewer check path/to/fw --site site
+```
+
+コマンドの詳細は「コレクタ CLI」を参照してください。
 
 ## 既知の制約・注意
 
