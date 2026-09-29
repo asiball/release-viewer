@@ -1,5 +1,5 @@
 "use strict";
-// Release Viewer: release-collect が出力した JSON（schema 1.x）をブラウザだけで表示する。
+// Release Viewer: release-viewer が出力した JSON（schema 1.x）をブラウザだけで表示する。
 // 文字列はすべて textContent で入れる（コミットメッセージ等を HTML として解釈しない）。
 
 const SUPPORTED_MAJOR = "1";
@@ -359,7 +359,8 @@ function matrixTable(onlyMissing, includeWarn, focusFix) {
       IDX.lanes.map((sid) => {
         const st = f.status[sid];
         const partial = st.units_total ? ` ${st.units_matched}/${st.units_total}` : "";
-        const tip = [STATE[st.state].label, st.method && METHOD[st.method], st.reason].filter(Boolean).join(" ／ ");
+        const tip = [STATE[st.state].label, st.method && METHOD[st.method], st.reason,
+          st.state === "excluded" && st.exclusion.reason].filter(Boolean).join(" ／ ");
         return el("td", {
           class: `cell st-${st.state}`, title: tip,
           onclick: () => showFix(f, sid),
@@ -389,8 +390,10 @@ function showFix(f, focusSeries) {
             st.method ? el("div", null, METHOD[st.method]) : "",
             (st.commits || []).map((s) => el("div", { class: "mono" }, short(s), " ", IDX.commit.get(s)?.subject || "")),
             st.reason ? el("div", null, "理由: ", st.reason) : "",
-            st.by || st.decided ? el("div", { class: "muted" }, [st.by, st.decided].filter(Boolean).join(" ")) : "",
-            st.exclusion ? el("div", { class: "sev-warning" }, "除外宣言あり（ただし適用済み）: ", st.exclusion.reason) : ""));
+            st.state === "excluded" ? [
+              el("div", null, "理由: ", st.exclusion.reason),
+              st.exclusion.by || st.exclusion.decided ? el("div", { class: "muted" }, [st.exclusion.by, st.exclusion.decided].filter(Boolean).join(" ")) : ""] : "",
+            st.exclusion && st.state !== "excluded" ? el("div", { class: "sev-warning" }, "除外宣言あり（ただし適用済み）: ", st.exclusion.reason) : ""));
       })),
     el("h3", null, "この fix を含むリリースタグ"),
     el("div", null, D.tags.filter((t) => t.kind === "release" && t.fixes_added.includes(f.id)).map((t) => [tagBadge(t.name), " "])));

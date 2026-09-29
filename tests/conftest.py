@@ -4,10 +4,13 @@ from pathlib import Path
 
 import pytest
 
-from release_collect.collect import Collector
+from release_viewer.collect import Collector
 
 ROOT = Path(__file__).resolve().parents[1]
 GENERATOR = ROOT / "sample" / "generate_sample_repo.py"
+
+# テストから sample/repobuilder.py（Repo）を import できるようにする
+sys.path.insert(0, str(ROOT / "sample"))
 
 
 def generate(out: Path) -> Path:
@@ -30,7 +33,7 @@ def config_dir(sample_repo, tmp_path) -> Path:
     """サンプルの main にある .release/ をコピーした、書き換え可能な設定ディレクトリ。"""
     d = tmp_path / "release-config"
     d.mkdir()
-    for name in ("series.toml", "exclusions.toml"):
+    for name in ("config.toml", "exclusions.toml"):
         text = subprocess.run(["git", "-C", str(sample_repo), "show", f"main:.release/{name}"],
                               check=True, capture_output=True, encoding="utf-8").stdout
         (d / name).write_text(text, encoding="utf-8")

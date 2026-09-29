@@ -24,7 +24,7 @@ class Git:
     def run_bytes(self, *args: str, input: bytes | None = None, check: bool = True) -> bytes:
         proc = subprocess.run(
             ["git", "-C", self.repo, *_SAFE_CONFIG, *args],
-            input=input, capture_output=True,
+            input=input, capture_output=True, check=False,
         )
         if check and proc.returncode != 0:
             raise GitError(f"git {' '.join(args)}: {proc.stderr.decode('utf-8', 'replace').strip()}")

@@ -20,12 +20,14 @@ components/
   lib-comm/ component.toml  ...
   app/      component.toml  ...
 .release/
-  series.toml       # 系列の定義（追跡するブランチと親子関係）
+  config.toml       # リポジトリ構成（[repository]）と系列の定義（[[series]]）
   exclusions.toml   # 「この系列には適用しない」宣言
 ```
 
 - コンポーネントは `components/<name>/` 直下に置く。`<name>` は `[a-z0-9][a-z0-9-]*`。
 - コミットがどのコンポーネントに属するかは、変更パスが `components/<name>/` 配下かどうかで判定する。
+- コンポーネントの置き場所（`components`）、メタファイル名（`component.toml`）、タグの書式、Fix-ID トレーラーの名前と書式は
+  `config.toml` の `[repository]` で変えられる（§4）。本書の記述はすべて既定値で書いている。
 - `.release/` の設定は **設定参照ref（既定 `main`）の HEAD から読む**。各系列ブランチ上のコピーは無視する（設定の分裂を防ぐため）。
   実リポジトリに設定をコミットしたくない場合は、コレクタの `--config-dir <path>` でローカルのディレクトリを渡せる。
 
@@ -38,7 +40,7 @@ components/
 | customer | `customer/<customer>/<major>.<minor>` | `customer/acme/1.2` | `release/1.2` |
 
 - 作業用ブランチ（`hotfix/*`, `feature/*`）は追跡しない。
-- 実際に追跡するのは `series.toml` に書かれたブランチだけ（命名規則は推奨であり、判定には使わない）。
+- 実際に追跡するのは `config.toml` の `[[series]]` に書かれたブランチだけ（命名規則は推奨であり、判定には使わない）。
 
 ## 3. タグ命名
 
@@ -56,13 +58,22 @@ components/
 ```
 <tag_prefix>v<semver>          例: fw/v1.2.3, fw-acme/v1.2.3
 ```
-- `tag_prefix` は系列ごとに `series.toml` で定義する。
+- `tag_prefix` は系列ごとに `config.toml` の `[[series]]` で定義する。
 - 「リリース詳細」画面の主役。タグ時点の全コンポーネントのバージョン（各 `component.toml` を読む）、前版からの差分、含まれる fix を表示する。
 - コンポーネントタグもクリックで同様に詳細を出せる（その時点の全コンポーネント構成）。
 
-## 4. 系列定義 `.release/series.toml`
+## 4. 設定 `.release/config.toml`
 
 ```toml
+# リポジトリ構成（省略可。省略したキーは既定値。値は下記がすべて既定値）
+[repository]
+component_dir  = "components"        # コンポーネントを置くディレクトリ
+meta_file      = "component.toml"    # component_dir/<name>/<meta_file>
+tag_pattern    = "^(?P<prefix>.+)/v(?P<version>[^/]+)$"   # 名前付きグループ prefix / version 必須
+fix_id_trailer = "Fix-ID"            # hotfix を識別するトレーラー名
+fix_id_pattern = "^[A-Z][A-Z0-9]*-\\d+$"                  # Fix-ID の値の書式
+
+# 系列の定義
 [[series]]
 branch     = "main"
 kind       = "mainline"
@@ -86,6 +97,9 @@ status     = "active"
 tag_prefix = "fw-acme/"
 ```
 
+- `[repository]` の不正な値（正規表現の構文エラー、`tag_pattern` の名前付きグループ `prefix` / `version` の欠落、未知のキー）は設定エラー（終了コード 2）。
+- `tag_pattern` の `prefix` がコンポーネント名ならコンポーネントタグ、`prefix + "/"` が系列の `tag_prefix` なら製品リリースタグとして扱う。
+- メタファイルの**書式**（`[component].version`、`[dependencies]`）は固定（§8）。
 - 系列IDはブランチ名そのもの。設定を読む ref はコレクタの `--config-ref`（既定 `main`）で指定する。
 - `parent` は分岐元の系列。分岐点は「系列ブランチの first-parent を遡って、最初に親系列から到達可能になるコミット」とする
   （`git merge-base` は親系列をマージすると動いてしまうため使わない）。
@@ -132,7 +146,7 @@ Fix-ID: FIX-123
 | – | – | 系列が `eol`、または対象コンポーネントが系列に存在しない | `not_applicable` |
 
 - 「系列にある」＝ 系列ブランチから到達可能なコミット（走査範囲内、§9）。
-- `patch_id_only` は**適用済みとみなすが警告を出す**（追跡根拠が弱いため）。`--check` では失敗にせず、`--strict` のときだけ失敗にする。
+- `patch_id_only` は**適用済みとみなすが警告を出す**（追跡根拠が弱いため）。`check` では失敗にせず、`--strict` のときだけ失敗にする。
 - `missing` の重大度は系列が `active` なら error、`maintenance` なら warning。
 - 除外宣言があるのに実際には適用されていた場合は `applied` とし、警告 `exclusion_but_applied` を出す。
 - 衝突解消で差分が変わった cherry-pick は patch-id が一致しないので、トレーラーか `-x` が無いと `missing` になる。これは意図した挙動（規約違反を可視化する）。
@@ -148,7 +162,7 @@ decided = "2026-09-01"
 by      = "t.yamada"
 ```
 
-- `fix`・`series`・`reason` は必須。理由のない除外はエラー（`--check` 失敗）。
+- `fix`・`series`・`reason` は必須。理由のない除外はエラー（`check` 失敗）。宣言に複数の系列があれば系列ごとに1件の違反 `exclusion_without_reason` を出す。
 - 設定参照ref（main）に集約する理由：除外の判断履歴が1ファイルの `git log` で追え、レビュー対象にしやすい。
 - 存在しない Fix-ID・系列を指す宣言は警告 `stale_exclusion`。
 
@@ -171,7 +185,7 @@ lib-comm = ">=1.4.1"
 
 ## 9. 走査範囲（大規模リポジトリ対策）
 
-- 読むのは `series.toml` のブランチから到達可能なコミットと、命名規約に合うタグ（`<prefix>/v<semver>`）だけ。`git log --all` は使わない。
+- 読むのは `config.toml` の系列のブランチから到達可能なコミットと、命名規約に合うタグ（`tag_pattern`、既定 `<prefix>/v<semver>`）だけ。`git log --all` は使わない。
 - 履歴が長い場合は `--since-ref <ref>` でその ref の祖先を走査から外せる（例：最も古い保守系列の分岐点より前のタグ）。
   外した範囲にある fix・タグの fix 集計は対象外になる。
 - `patch-id` は重いので、トレーラー／`-x` で決まらなかった組み合わせについて、**fix の対象コンポーネントのパスを変更したコミットだけ**をまとめて1回で計算する。
@@ -181,13 +195,19 @@ lib-comm = ">=1.4.1"
 ## 10. コレクタ CLI（概要）
 
 ```
-release-collect <repo> -o site/data.json [--config-ref main] [--config-dir DIR] [--remote origin]
-                [--since-ref REF] [--name NAME] [--check [--strict]]
+release-viewer collect <repo> [-o data.json] [--site DIR] [--config-ref main] [--config-dir DIR]
+                              [--remote origin] [--since-ref REF] [--name NAME]
+release-viewer check   <repo> [collect と同じオプション] [--strict]
 ```
+- `python -m release_viewer …` でも同じ。
 - 出力：`data.json` と、同内容を `window.RELEASE_DATA = …` で包んだ `data.js`
   （`file://` で開いた HTML でも fetch 不要で読めるようにするため。画面側はファイル選択での読み込みにも対応する）。
-- `--check` の終了コード：`0` 違反なし／`1` error 級の違反あり（`fix_missing`, `dependency_violation` ほか）／`2` 設定・引数エラー。
-  警告（`patch_id_only` 等）は `--strict` 指定時のみ `1` にする。
+  `--site DIR` は DIR に `data.json`・`data.js` と画面（`index.html`, `app.js`, `style.css`）を揃える。
+  `collect` で `-o` も `--site` もなければ JSON を標準出力に書く。
+- `--config-dir DIR` は `DIR/config.toml` と `DIR/exclusions.toml` を読む。
+- 終了コード：`0` 成功／`1` `check` で error 級の違反あり（`fix_missing`, `dependency_violation` ほか）／
+  `2` 設定・引数・git のエラー、および想定外の例外（traceback を標準エラーに出す。`git` が見つからない場合を含む）。
+  `check` では警告（`patch_id_only` 等）は `--strict` 指定時のみ `1` にする。`--strict` は `check` にしかない。
 
 ## 11. 出力JSONスキーマ（schema_version 1.0）
 
@@ -202,7 +222,7 @@ release-collect <repo> -o site/data.json [--config-ref main] [--config-dir DIR] 
 {
   "schema_version": "1.0",
   "generated_at": "2026-09-28T00:00:00Z",          // SOURCE_DATE_EPOCH があればその時刻
-  "generator": { "name": "release-collect", "version": "0.1.0" },
+  "generator": { "name": "release-viewer", "version": "0.1.0" },
   "repository": {
     "name": "sample-fw",
     "config_ref": "main",                          // --config-dir 使用時は null
@@ -210,7 +230,7 @@ release-collect <repo> -o site/data.json [--config-ref main] [--config-dir DIR] 
     "since_ref": null
   },
 
-  "components": [ { "name": "hal", "path": "components/hal" } ],
+  "components": [ { "name": "hal", "path": "components/hal" } ],   // path は [repository].component_dir 基準
 
   "series": [
     {
@@ -268,11 +288,12 @@ release-collect <repo> -o site/data.json [--config-ref main] [--config-dir DIR] 
       "status": {
         "release/1.2":       { "state": "applied", "method": "trailer", "commits": ["<sha>"] },
         "customer/acme/1.2": { "state": "patch_id_only", "method": "patch_id", "commits": ["<sha>"] },
-        "customer/beta/1.1": { "state": "excluded", "reason": "...", "by": "...", "decided": "..." },
+        "customer/beta/1.1": { "state": "excluded", "exclusion": { "reason": "...", "by": "...", "decided": "..." } },
         "release/1.1":       { "state": "missing" },
         "customer/x/1.0":    { "state": "not_applicable", "reason": "系列が eol" }
         // 単位が複数の fix では units_total / units_matched が付く。missing でも一部一致すれば commits が付く
-        // 除外宣言があるのに適用済みなら applied に "exclusion": {...} が付く
+        // 除外情報は常に "exclusion": {reason, by, decided} の入れ子（excluded のほか、除外宣言があるのに適用済みの applied にも付く）
+        // トップレベルの "reason" は not_applicable 専用
       }
     }
   ],
@@ -298,6 +319,7 @@ release-collect <repo> -o site/data.json [--config-ref main] [--config-dir DIR] 
       "severity": "error",
       "message": "FIX-123 が release/1.1 に未適用",
       "refs": { "fix": "FIX-123", "series": "release/1.1" }   // fix / series / tag / component / ref / commit
+      // exclusion_without_reason は宣言の系列ごとに1件で、refs.series は必ず入る
     }
   ],
 

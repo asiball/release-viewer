@@ -1,4 +1,4 @@
-from release_collect.deps import check_dependencies
+from release_viewer.deps import check_dependencies
 
 from .conftest import tag, violations
 

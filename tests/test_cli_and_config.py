@@ -1,10 +1,16 @@
 import json
+import os
 import subprocess
+import sys
 
-from release_collect.__main__ import main
-from release_collect.collect import Collector
+import pytest
+from repobuilder import Repo
 
-from .conftest import fix, generate, violations
+from release_viewer.__main__ import main
+from release_viewer.collect import Collector
+from release_viewer.config import ConfigError, parse_config
+
+from .conftest import ROOT, fix, generate, violations
 
 ONLY_MAIN_AND_12 = """
 [[series]]
@@ -21,35 +27,35 @@ tag_prefix = "fw/"
 
 
 def test_check_fails_on_sample(sample_repo, tmp_path, capsys):
-    assert main([str(sample_repo), "-o", str(tmp_path / "data.json"), "--check"]) == 1
+    assert main(["check", str(sample_repo), "-o", str(tmp_path / "data.json")]) == 1
     err = capsys.readouterr().err
     assert "fix_missing" in err and "dependency_violation" in err
     assert (tmp_path / "data.js").read_text(encoding="utf-8").startswith("window.RELEASE_DATA = {")
 
 
 def test_check_passes_when_clean(sample_repo, config_dir, tmp_path):
-    (config_dir / "series.toml").write_text(ONLY_MAIN_AND_12, encoding="utf-8")
+    (config_dir / "config.toml").write_text(ONLY_MAIN_AND_12, encoding="utf-8")
     (config_dir / "exclusions.toml").write_text("", encoding="utf-8")  # 1.1 系向けの宣言は不要
-    args = [str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json"), "--check"]
+    args = ["check", str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json")]
     assert main(args) == 0
     assert main(args + ["--strict"]) == 0
 
 
 def test_strict_fails_on_warnings(sample_repo, config_dir, tmp_path):
     # release/1.1 だけを見る: error はなく patch_id_only の warning だけ
-    (config_dir / "series.toml").write_text(ONLY_MAIN_AND_12.replace("1.2", "1.1"), encoding="utf-8")
-    args = [str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json"), "--check"]
+    (config_dir / "config.toml").write_text(ONLY_MAIN_AND_12.replace("1.2", "1.1"), encoding="utf-8")
+    args = ["check", str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json")]
     assert main(args) == 0
     assert main(args + ["--strict"]) == 1
 
 
 def test_config_error_exit_2(sample_repo, config_dir, tmp_path):
-    (config_dir / "series.toml").write_text('[[series]]\nbranch = "nope"\nkind = "mainline"\n',
+    (config_dir / "config.toml").write_text('[[series]]\nbranch = "nope"\nkind = "mainline"\n',
                                             encoding="utf-8")
-    assert main([str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json")]) == 2
-    (config_dir / "series.toml").write_text('[[series]]\nbranch = "main"\nkind = "trunk"\n',
+    assert main(["collect", str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json")]) == 2
+    (config_dir / "config.toml").write_text('[[series]]\nbranch = "main"\nkind = "trunk"\n',
                                             encoding="utf-8")
-    assert main([str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json")]) == 2
+    assert main(["collect", str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json")]) == 2
 
 
 def test_exclusion_rules(sample_repo, config_dir):
@@ -108,3 +114,88 @@ def test_generation_and_output_are_reproducible(sample_repo, tmp_path, monkeypat
     a = Collector(sample_repo, name="sample-fw").collect()
     b = Collector(other, name="sample-fw").collect()
     assert json.dumps(a, ensure_ascii=False) == json.dumps(b, ensure_ascii=False)
+
+
+def test_site_output(sample_repo, tmp_path):
+    site = tmp_path / "site"
+    assert main(["collect", str(sample_repo), "--site", str(site)]) == 0
+    assert sorted(p.name for p in site.iterdir()) == ["app.js", "data.js", "data.json", "index.html", "style.css"]
+
+
+def test_strict_is_check_only(tmp_path, capsys):
+    with pytest.raises(SystemExit) as e:
+        main(["collect", str(tmp_path), "--strict"])
+    assert e.value.code == 2
+    assert "--strict" in capsys.readouterr().err
+
+
+def test_git_not_found_exit_2(tmp_path):
+    """git が PATH にないと FileNotFoundError になる。違反ありの 1 と区別できるよう 2 で終える。"""
+    env = {**os.environ, "PATH": ""}
+    proc = subprocess.run([sys.executable, "-m", "release_viewer", "collect", str(tmp_path)],
+                          cwd=ROOT, env=env, capture_output=True, encoding="utf-8", check=False)
+    assert proc.returncode == 2
+    assert "Traceback" in proc.stderr and "FileNotFoundError" in proc.stderr
+
+
+def test_repository_settings(tmp_path):
+    """[repository] でコンポーネントの置き場所・メタファイル名・タグ書式・Fix-ID トレーラーを変えられる。"""
+    r = Repo(tmp_path / "repo")
+    r.init()
+    r.write(".release/config.toml", """
+[repository]
+component_dir  = "fw/modules"
+meta_file      = "module.toml"
+tag_pattern    = '^(?P<prefix>[a-z-]+)@(?P<version>.+)$'
+fix_id_trailer = "Bug-ID"
+fix_id_pattern = '^BUG-[0-9]+$'
+
+[[series]]
+branch = "main"
+kind = "mainline"
+""")
+    r.write("fw/modules/hal/module.toml", '[component]\nname = "hal"\nversion = "1.0.0"\n')
+    r.write("fw/modules/hal/src/hal.c", "void hal_init(void) {}\n")
+    r.write("components/decoy/component.toml", '[component]\nname = "decoy"\nversion = "9.9.9"\n')
+    r.commit("chore: 初期インポート", "sato")
+    r.tag("hal@1.0.0")
+    r.write("fw/modules/hal/src/hal.c", "void hal_init(void) { reset(); }\n")
+    r.commit("hal: 初期化時にリセットする\n\nBug-ID: BUG-7\nFix-ID: FIX-1\n", "tanaka")
+
+    d = Collector(r.path).collect()
+    assert d["components"] == [{"name": "hal", "path": "fw/modules/hal"}]
+    assert d["series"][0]["head_snapshot"] == {"hal": "1.0.0"}
+    assert [(t["name"], t["kind"], t["component"], t["version"]) for t in d["tags"]] == [
+        ("hal@1.0.0", "component", "hal", "1.0.0")]
+    assert [(f["id"], f["components"]) for f in d["fixes"]] == [("BUG-7", ["hal"])]
+    assert d["violations"] == []
+
+
+@pytest.mark.parametrize("line,message", [
+    ("tag_pattern = '(unclosed'", "正規表現が不正"),
+    ("tag_pattern = '^(?P<version>.+)$'", "prefix"),
+    ("fix_id_pattern = '['", "正規表現が不正"),
+    ("fix_id_trailer = 'Fix ID'", "fix_id_trailer"),
+    ("component_dir = ''", "component_dir"),
+    ("unknown = 'x'", "未知のキー"),
+])
+def test_invalid_repository_settings(line, message):
+    with pytest.raises(ConfigError, match=message):
+        parse_config(f"[repository]\n{line}\n\n{ONLY_MAIN_AND_12}", "")
+
+
+def test_invalid_repository_settings_exit_2(sample_repo, config_dir, tmp_path):
+    (config_dir / "config.toml").write_text(f"[repository]\ntag_pattern = '('\n{ONLY_MAIN_AND_12}", encoding="utf-8")
+    assert main(["collect", str(sample_repo), "--config-dir", str(config_dir), "-o", str(tmp_path / "d.json")]) == 2
+
+
+def test_exclusion_without_reason_per_series(sample_repo, config_dir):
+    (config_dir / "exclusions.toml").write_text("""
+[[exclude]]
+fix = "FIX-102"
+series = ["release/1.1", "customer/beta/1.1"]
+""", encoding="utf-8")
+    d = Collector(sample_repo, config_dir=config_dir).collect()
+    assert sorted(v["refs"]["series"] for v in violations(d, "exclusion_without_reason")) == [
+        "customer/beta/1.1", "release/1.1"]
+    assert all(v["refs"]["fix"] == "FIX-102" for v in violations(d, "exclusion_without_reason"))

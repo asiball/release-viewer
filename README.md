@@ -1,4 +1,4 @@
-# poc-release-viewer
+# release-viewer
 
 コンポーネント単位でバージョンを持つ組み込みFWモノレポについて、次の3点を一望する静的Webアプリとコレクタ（サンプル実装）です。
 
@@ -13,10 +13,11 @@
 | パス | 内容 |
 |---|---|
 | `sample/generate_sample_repo.py` | 架空のFWモノレポ（driver / hal / lib-comm / app、6系列）を生成する。再実行しても同じSHAになる |
-| `release_collect/` | コレクタ（Python 3.11+、標準ライブラリと `git` コマンドのみ） |
-| `web/` | 画面（静的 HTML/JS/CSS、ビルド不要） |
-| `tests/` | pytest（生成したサンプルリポジトリを入力に、伝播判定・依存チェックなどを検証） |
-| `.github/workflows/pages.yml` | サンプル生成 → テスト → 収集 → GitHub Pages へのデプロイ |
+| `sample/repobuilder.py` | 固定の作者・日時で git リポジトリを組み立てる `Repo`（サンプル生成器とテストで共用） |
+| `release_viewer/` | コレクタ CLI（Python 3.11+、標準ライブラリと `git` コマンドのみ） |
+| `release_viewer/web/` | 画面（静的 HTML/JS/CSS、ビルド不要）。`--site` で data.json と一緒に出力される |
+| `tests/` | pytest（生成したサンプルリポジトリを入力に、伝播判定・依存チェックなどを検証）。`tests/golden/data.json` は出力のゴールデン |
+| `.github/workflows/pages.yml` | テスト（Ubuntu / Windows）→ サンプル生成 → 収集 → GitHub Pages へのデプロイ |
 
 git の操作は `git` コマンドを subprocess で呼んでいます。`git patch-id --stable` とトレーラー解析（`%(trailers)`）を git 本体と同じ解釈で使えるためです。pygit2 には patch-id の互換実装がないうえネイティブ依存が増え、GitPython は内部で git CLI を呼ぶだけなので得るものが少ないと判断しました。
 
@@ -24,19 +25,21 @@ git の操作は `git` コマンドを subprocess で呼んでいます。`git p
 
 ```sh
 python sample/generate_sample_repo.py build/sample-fw --force
-python -m release_collect build/sample-fw -o build/site/data.json
-cp web/* build/site/
+python -m release_viewer collect build/sample-fw --site build/site
 # build/site/index.html をブラウザで直接開く（サーバー不要）
 ```
 
-コレクタは `data.json` と一緒に `data.js`（`window.RELEASE_DATA = …`）も出力します。そのため `file://` で開いても読み込めます。`data.js` がない場合は、画面から `data.json` を選択するかドロップしてください。
+`--site` は `data.json`・`data.js` と画面（`index.html` ほか）を同じディレクトリに揃えます。コレクタは `data.json` と一緒に `data.js`（`window.RELEASE_DATA = …`）も出力します。そのため `file://` で開いても読み込めます。`data.js` がない場合は、画面から `data.json` を選択するかドロップしてください。
 
 テスト：
 
 ```sh
-pip install pytest
+pip install pytest ruff
 python -m pytest -q
+ruff check .
 ```
+
+`tests/golden/data.json` はサンプルリポジトリの出力（`SOURCE_DATE_EPOCH=1790000000`、`--name sample-fw`）と完全一致を確認します。出力を意図して変えたときは `UPDATE_GOLDEN=1 python -m pytest tests/test_golden.py` で更新し、差分をレビューしてください。
 
 ## 画面
 
@@ -53,23 +56,31 @@ URL のハッシュで画面と対象を指定できるので、リンクで共�
 ## コレクタ CLI
 
 ```
-python -m release_collect <repo> [-o site/data.json] [--config-ref main] [--config-dir DIR]
-                                 [--remote origin] [--since-ref REF] [--name NAME]
-                                 [--check [--strict]]
+release-viewer collect <repo> [-o data.json] [--site DIR] [--config-ref main] [--config-dir DIR]
+                              [--remote origin] [--since-ref REF] [--name NAME]
+release-viewer check   <repo> [collect と同じオプション] [--strict]
 ```
+
+`pip install .` で `release-viewer` コマンドが入ります。インストールせずに `python -m release_viewer …` でも同じです。
+
+| サブコマンド | 説明 |
+|---|---|
+| `collect` | 走査して JSON を出力する。`-o` も `--site` もなければ標準出力に書く |
+| `check` | `collect` と同じ走査をして、error 級の違反（active 系列の fix 未伝播、依存違反、理由のない除外）があれば終了コード 1。`-o` / `--site` を付ければ JSON も出力する |
 
 | オプション | 説明 |
 |---|---|
-| `--config-ref` | `.release/series.toml` と `.release/exclusions.toml` を読む ref（既定 `main`） |
-| `--config-dir` | 設定をリポジトリに置かず、ローカルのディレクトリ（`series.toml`, `exclusions.toml`）から読む |
+| `-o` | 出力先の `data.json`（同じ場所に `data.js` も書く） |
+| `--site` | 指定したディレクトリに `data.json`・`data.js` と画面（`index.html`, `app.js`, `style.css`）を揃えて出力する |
+| `--config-ref` | `.release/config.toml` と `.release/exclusions.toml` を読む ref（既定 `main`） |
+| `--config-dir` | 設定をリポジトリに置かず、ローカルのディレクトリ（`config.toml`, `exclusions.toml`）から読む |
 | `--remote` | ローカルブランチがないときに参照するリモート（既定 `origin`）。CI の clone でもそのまま動く |
 | `--since-ref` | 指定した ref の祖先を走査しない（大規模リポジトリ向け） |
-| `--check` | error 級の違反（active 系列の fix 未伝播、依存違反、理由のない除外）があれば終了コード 1 |
-| `--strict` | `--check` と併用すると、warning（patch-id のみ一致、maintenance 系列の未伝播など）も失敗扱いにする |
+| `--strict` | `check` のみ。warning（patch-id のみ一致、maintenance 系列の未伝播など）も失敗扱いにする |
 
-終了コードは、`0` が違反なし、`1` が `--check` で違反あり、`2` が設定・引数・git のエラーです。
+終了コードは、`0` が成功、`1` が `check` で違反あり、`2` が設定・引数・git のエラーです。想定外の例外（`git` が見つからない等）も traceback を標準エラーに出して `2` で終えます。
 
-走査するのは `series.toml` に書いたブランチから到達できるコミットと、`<prefix>/v<semver>` 形式のタグだけです（`--all` は使いません）。
+走査するのは `config.toml` に書いた系列のブランチから到達できるコミットと、`[repository].tag_pattern`（既定 `<prefix>/v<semver>`）に合うタグだけです（`--all` は使いません）。
 
 ## 実リポジトリに適用する
 
@@ -78,9 +89,9 @@ python -m release_collect <repo> [-o site/data.json] [--config-ref main] [--conf
 - 各コンポーネントに `components/<name>/component.toml` を置き、`version` と `[dependencies]` を書く
 - コンポーネントのリリースタグは `<component>/v<semver>`（注釈付き）で付ける。製品リリースタグは `<tag_prefix>v<semver>` で付ける
 - hotfix の元コミットに `Fix-ID: FIX-123` トレーラーを付け、各系列へは `git cherry-pick -x` で配る
-- main に `.release/series.toml`（追跡する系列）と `.release/exclusions.toml`（対象外の宣言、理由は必須）を置く
+- main に `.release/config.toml`（リポジトリ構成と追跡する系列）と `.release/exclusions.toml`（対象外の宣言、理由は必須）を置く
 
-コンポーネントのディレクトリが `components/` 以外にある場合は、`release_collect/collect.py` の `COMPONENT_DIR` を変更してください。
+コンポーネントのディレクトリ・メタファイル名・タグ書式・Fix-ID トレーラーが既定と違う場合は、`config.toml` の `[repository]` で指定します（docs/conventions.md §4）。
 
 ### 2. FWリポジトリ側の GitHub Actions（CIゲート＋Pages）
 
@@ -107,10 +118,7 @@ jobs:
           python-version: "3.12"
       - name: Collect & gate
         working-directory: viewer
-        run: python -m release_collect ../fw -o ../_site/data.json --check
-      - name: Assemble site
-        if: always()
-        run: cp viewer/web/* _site/
+        run: python -m release_viewer check ../fw --site ../_site
       - uses: actions/upload-pages-artifact@v3
         if: always() && github.ref == 'refs/heads/main'
         with:
@@ -120,7 +128,7 @@ jobs:
 
 - **注意**：コレクタが評価するのは追跡ブランチの現状です。PR で実行しても「その PR をマージした後の状態」は評価しないため、PR 単位のゲートにはなりません（現状の違反を検出するだけ）。PR ゲートにするには、ブランチをマージ後のコミットに置き換えて評価する機能の追加が必要です。
 - `actions/checkout` で `fetch-depth: 0` にすると、系列ブランチは `refs/remotes/origin/<branch>` として取得されます。コレクタはローカルブランチが見つからなければ、自動的にこちらを参照します。
-- 違反があっても画面は公開したい場合は、上の例のように `--check` の失敗後も `if: always()` でサイトを組み立ててください。
+- `check --site` は違反があってもサイトを出力してから終了コード 1 で終わります。違反があっても画面は公開したい場合は、上の例のように `if: always()` でアップロードしてください。
 - 設定をFWリポジトリにコミットしたくない場合は、`--config-dir` で別の場所から渡せます。
 
 ## 既知の制約・注意

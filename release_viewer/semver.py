@@ -27,7 +27,7 @@ class Version:
     raw: str
 
     @classmethod
-    def parse(cls, text: str) -> "Version":
+    def parse(cls, text: str) -> Version:
         m = _SEMVER.match(text)
         if not m:
             raise VersionError(f"semver ではない: {text!r}")
@@ -58,7 +58,7 @@ class Constraint:
     raw: str
 
     @classmethod
-    def parse(cls, text: str) -> "Constraint":
+    def parse(cls, text: str) -> Constraint:
         terms = []
         for part in text.split(","):
             part = part.strip()

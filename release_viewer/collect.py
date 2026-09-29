@@ -1,6 +1,6 @@
 """リポジトリを走査して可視化用JSON（docs/conventions.md §11）を組み立てる。
 
-走査対象は series.toml のブランチと、`<prefix>/v<version>` 形式のタグだけ。
+走査対象は config.toml の系列のブランチと、`[repository].tag_pattern`（既定 `<prefix>/v<version>`）に合うタグだけ。
 """
 
 from __future__ import annotations
@@ -10,26 +10,24 @@ import os
 import re
 import tomllib
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from . import __version__
-from .config import Config, ConfigError, Series, load_config
+from .config import ConfigError, Series, load_config
 from .deps import check_dependencies
 from .gitcmd import Git
 from .semver import Version, VersionError
 
 SCHEMA_VERSION = "1.0"
 
-FIX_ID_RE = re.compile(r"^[A-Z][A-Z0-9]*-\d+$")
-CHERRY_RE = re.compile(r"^\(cherry picked from commit ([0-9a-f]{40})\)\s*$", re.M)
-TAG_RE = re.compile(r"^(?P<prefix>.+)/v(?P<version>[^/]+)$")
-COMPONENT_DIR = "components"
+CHERRY_RE = re.compile(r"^\(cherry picked from commit ([0-9a-f]{40})\)\s*$", re.MULTILINE)
 
 # 伝播判定の方式。数字が大きいほど根拠が弱い（docs/conventions.md §6）
 METHOD_RANK = {"ancestry": 0, "trailer": 1, "cherry_pick_x": 2, "patch_id": 3}
 
-_LOG_FORMAT = "%x1e%H%x1f%P%x1f%an%x1f%cI%x1f%s%x1f%(trailers:key=Fix-ID,valueonly,separator=%x1d)%x1f%B%x1f"
+# {trailer} は [repository].fix_id_trailer
+_LOG_FORMAT = "%x1e%H%x1f%P%x1f%an%x1f%cI%x1f%s%x1f%(trailers:key={trailer},valueonly,separator=%x1d)%x1f%B%x1f"
 
 
 @dataclass
@@ -125,9 +123,11 @@ class Collector:
 
     # ------------------------------------------------------------------ コミット
     def _scan_commits(self) -> None:
+        repo = self.config.repository
+        comp_prefix = f"{repo.component_dir}/"
         refs = [rs.ref for rs in self.series.values()]
         out = self.git.run("log", "--date-order", "--name-only", "--no-renames",
-                           f"--format={_LOG_FORMAT}", *refs, *self.exclude)
+                           f"--format={_LOG_FORMAT.format(trailer=repo.fix_id_trailer)}", *refs, *self.exclude)
         records = [r for r in out.split("\x1e") if r.strip()]
         self.commits: dict[str, Commit] = {}
         for rec in records:
@@ -137,13 +137,13 @@ class Collector:
             for value in (v.strip() for v in trailers.split("\x1d")):
                 if not value:
                     continue
-                if FIX_ID_RE.match(value):
+                if repo.fix_id_pattern.match(value):
                     fix_ids.append(value)
                 else:
                     self._violation("invalid_fix_id", "warning",
-                                    f"{sha[:10]} の Fix-ID が書式に合わない: {value!r}", commit=sha)
-            comps = sorted({p.split("/")[1] for p in paths.split("\n")
-                            if p.startswith(f"{COMPONENT_DIR}/") and p.count("/") >= 2})
+                                    f"{sha[:10]} の {repo.fix_id_trailer} が書式に合わない: {value!r}", commit=sha)
+            comps = sorted({p[len(comp_prefix):].split("/")[0] for p in paths.split("\n")
+                            if p.startswith(comp_prefix) and "/" in p[len(comp_prefix):]})
             self.commits[sha] = Commit(
                 sha=sha, parents=parents.split(), author=author, date=date, subject=subject,
                 fix_ids=sorted(set(fix_ids)), picked_from=CHERRY_RE.findall(body), components=comps)
@@ -179,15 +179,17 @@ class Collector:
         """コミット時点の全コンポーネントのメタデータ {name: {version, dependencies, error}}"""
         if commit in self._snapshot_cache:
             return self._snapshot_cache[commit]
-        listing = self.git.run("ls-tree", "--name-only", commit, f"{COMPONENT_DIR}/", check=False)
-        names = sorted(line.split("/", 1)[1] for line in listing.splitlines() if "/" in line)
-        specs = [f"{commit}:{COMPONENT_DIR}/{n}/component.toml" for n in names]
+        repo = self.config.repository
+        comp_prefix = f"{repo.component_dir}/"
+        listing = self.git.run("ls-tree", "--name-only", commit, comp_prefix, check=False)
+        names = sorted(line[len(comp_prefix):] for line in listing.splitlines() if line.startswith(comp_prefix))
+        specs = [f"{commit}:{comp_prefix}{n}/{repo.meta_file}" for n in names]
         files = self.git.cat_files(specs)
         snap: dict[str, dict] = {}
         for name, spec in zip(names, specs):
             raw = files.get(spec)
             if raw is None:
-                continue  # component.toml がないディレクトリはコンポーネントとみなさない
+                continue  # メタファイルがないディレクトリはコンポーネントとみなさない
             snap[name] = _parse_component_meta(name, raw)
         self._snapshot_cache[commit] = snap
         return snap
@@ -196,7 +198,8 @@ class Collector:
         for name, meta in snap.items():
             if meta["error"]:
                 self._violation("invalid_component_meta", "warning",
-                                f"{where}: {name}/component.toml: {meta['error']}", component=name, **refs)
+                                f"{where}: {name}/{self.config.repository.meta_file}: {meta['error']}",
+                                component=name, **refs)
 
     # ------------------------------------------------------------------ タグ
     def _read_tags(self) -> None:
@@ -209,7 +212,7 @@ class Collector:
             component_names |= set(self.snapshot(rs.head))
         for line in out.splitlines():
             name, otype, oid, peeled, date = line.split("\x1f")
-            m = TAG_RE.match(name)
+            m = self.config.repository.tag_pattern.match(name)
             if not m:
                 continue
             prefix, ver = m.group("prefix"), m.group("version")
@@ -453,7 +456,7 @@ class Collector:
             return entry
 
         if exclusion:
-            return {"state": "excluded", **exclusion, **base}
+            return {"state": "excluded", "exclusion": exclusion, **base}
         severity = "error" if rs.cfg.status == "active" else "warning"
         partial = f"（{total} コミット中 {len(matched)} のみ適用）" if matched else ""
         self._violation("fix_missing", severity, f"{fid} が {sid} に未適用{partial}", fix=fid, series=sid)
@@ -488,7 +491,8 @@ class Collector:
                 actual = versions.get(t["component"])
                 if actual != t["version"]:
                     self._violation("tag_version_mismatch", "warning",
-                                    f"タグ {t['name']} と component.toml の version（{actual}）が一致しない",
+                                    f"タグ {t['name']} と {self.config.repository.meta_file} の version"
+                                    f"（{actual}）が一致しない",
                                     tag=t["name"], component=t["component"])
 
             # 含まれる fix: 前版の集合 + 前版からの範囲に入ったコミット
@@ -509,7 +513,7 @@ class Collector:
             else:
                 included, before = set(), set()
             if t["kind"] == "component":
-                relevant = lambda f: t["component"] in self.fix_defs[f]["components"]
+                relevant = lambda f, comp=t["component"]: comp in self.fix_defs[f]["components"]
                 included = {f for f in included if relevant(f)}
                 before = {f for f in before if relevant(f)}
 
@@ -648,14 +652,15 @@ class Collector:
         sev_rank = {"error": 0, "warning": 1}
         violations = sorted(self.violations, key=lambda v: (sev_rank[v["severity"]], v["kind"], v["message"]))
         epoch = os.environ.get("SOURCE_DATE_EPOCH")
-        now = datetime.fromtimestamp(int(epoch), timezone.utc) if epoch else datetime.now(timezone.utc)
+        now = datetime.fromtimestamp(int(epoch), UTC) if epoch else datetime.now(UTC)
         return {
             "schema_version": SCHEMA_VERSION,
             "generated_at": now.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-            "generator": {"name": "release-collect", "version": __version__},
+            "generator": {"name": "release-viewer", "version": __version__},
             "repository": {"name": self.name, "config_ref": None if self.config_dir else self.config_ref,
                            "config_commit": config_commit, "since_ref": self.since_ref},
-            "components": [{"name": n, "path": f"{COMPONENT_DIR}/{n}"} for n in sorted(components)],
+            "components": [{"name": n, "path": f"{self.config.repository.component_dir}/{n}"}
+                           for n in sorted(components)],
             "series": series_out,
             "commits": nodes,
             "graph": {"edges": edges},
