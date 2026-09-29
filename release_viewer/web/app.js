@@ -62,6 +62,7 @@ const seriesName = (id) => {
 // ---------------------------------------------------------------- 読み込み
 function init() {
   window.addEventListener("hashchange", route);
+  window.addEventListener("resize", syncHeaderHeight);
   const loader = document.getElementById("loader");
   document.getElementById("file").addEventListener("change", (ev) => readFile(ev.target.files[0]));
   loader.addEventListener("dragover", (ev) => { ev.preventDefault(); loader.classList.add("drag"); });
@@ -177,6 +178,7 @@ function route() {
   const fn = views[view] || renderTree;
   for (const a of document.querySelectorAll("#tabs a")) a.classList.toggle("active", a.dataset.view === (views[view] ? view : "tree"));
   closePanel();
+  syncHeaderHeight();
   const root = document.getElementById("view");
   root.replaceChildren();
   fn(root, arg);
@@ -186,8 +188,13 @@ function openPanel(...children) {
   const p = document.getElementById("panel");
   p.replaceChildren(el("button", { class: "close", type: "button", title: "閉じる", onclick: closePanel }, "×"), ...children);
   p.hidden = false;
+  syncHeaderHeight();
 }
 function closePanel() { document.getElementById("panel").hidden = true; }
+// ヘッダは幅によって2行に折れるので、詳細パネルとタグ一覧（sticky）の上端を実際の高さに合わせる
+function syncHeaderHeight() {
+  document.documentElement.style.setProperty("--header-h", document.getElementById("top").offsetHeight + "px");
+}
 
 // ---------------------------------------------------------------- 1. 系列ツリー
 function renderTree(root) {
