@@ -155,7 +155,7 @@ function renderHeader() {
     el("span", { class: "sev-" + v.severity }, v.severity === "error" ? "ERROR" : "WARN"), " ",
     el("code", null, v.kind), " ", violationLink(v)))));
   btn.onclick = () => { box.hidden = !box.hidden; };
-  box.hidden = errors === 0;
+  box.hidden = true;  // 件数はボタンで分かるので既定は閉じる。開閉は画面遷移（route）で保持される
 }
 
 function violationLink(v) {
@@ -225,7 +225,7 @@ function laneLegend() {
 }
 
 function drawTree(showPicks, onlyProblems) {
-  const LANE_W = 30, ROW_H = 26, LEFT = 18, TOP = 12;
+  const LANE_W = 30, ROW_H = 26, LEFT = 18, TOP = 84;  // TOP: レーン名（-60° 回転）の分
   const nodes = [...D.commits].sort((a, b) => b.seq - a.seq);
   const laneIdx = new Map(IDX.lanes.map((id, i) => [id, i]));
   const rowOf = new Map(nodes.map((n, i) => [n.sha, i]));
@@ -242,9 +242,16 @@ function drawTree(showPicks, onlyProblems) {
 
   const g = svg("svg", { width, height, viewBox: `0 0 ${width} ${height}` });
   IDX.lanes.forEach((id, i) => g.append(svg("line", {
-    x1: LEFT + i * LANE_W, x2: LEFT + i * LANE_W, y1: 0, y2: height,
+    x1: LEFT + i * LANE_W, x2: LEFT + i * LANE_W, y1: TOP - 4, y2: height,
     stroke: IDX.laneColor.get(id), "stroke-opacity": 0.12, "stroke-width": 10,
   }, svg("title", null, id))));
+  // レーン名。右上へ伸びる分は、行リストの padding-top（= TOP）の空白にはみ出して描く
+  IDX.lanes.forEach((id, i) => {
+    const x = LEFT + i * LANE_W, y = TOP - 8;
+    const label = IDX.series.get(id)?.kind === "customer" ? id.replace(/^customer\//, "") : id;
+    g.append(svg("text", { x, y, class: "lane-label", fill: IDX.laneColor.get(id), transform: `rotate(-60 ${x} ${y})` },
+      label, svg("title", null, id)));
+  });
 
   for (const e of D.graph.edges) {
     if (!rowOf.has(e.from) || !rowOf.has(e.to)) continue;
@@ -417,6 +424,12 @@ function renderRelease(root, name) {
   root.append(el("h2", null, "リリース詳細"), el("div", { class: "split" }, list, current ? releaseDetail(current) : el("p", null, "タグがありません。")));
 }
 
+// 含まれる fix の赤バッジ（未伝播）は他の系列でのこと。このリリースに入っていないと誤読されないよう注記する
+function missingNote(ids) {
+  const red = ids.some((id) => (IDX.problemSeriesByFix.get(id) || []).some((p) => p.state === "missing"));
+  return red ? el("p", { class: "muted" }, "赤いバッジは他の系列で未伝播の fix（このリリースには含まれる）") : null;
+}
+
 function releaseDetail(t) {
   const prev = t.previous ? IDX.tag.get(t.previous) : null;
   const changed = new Set(t.diff.map((d) => d.component));
@@ -443,8 +456,10 @@ function releaseDetail(t) {
         el("td", null, c), el("td", { class: "mono" }, t.snapshot[c] ?? "（なし）"),
         el("td", { class: "mono" }, prev ? (prev.snapshot[c] ?? "（なし）") : "—")))),
     el("h3", null, `前版から追加された fix（${t.fixes_added.length}）`),
+    missingNote(t.fixes_added),
     t.fixes_added.length ? el("ul", null, t.fixes_added.map(fixRow)) : el("p", { class: "muted" }, "なし"),
     el("h3", null, `含まれる fix（${t.fixes_included.length}）`),
+    missingNote(t.fixes_included),
     t.fixes_included.length ? el("ul", null, t.fixes_included.map(fixRow)) : el("p", { class: "muted" }, "なし"),
     notIn.length ? [el("h3", { class: "sev-error" }, "この系列で未適用の fix（このタグにも含まれない）"), el("ul", null, notIn.map(fixRow))] : null,
     dep ? [el("h3", null, "依存チェック（このタグ時点）"), depTable(dep)] : null);
