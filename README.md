@@ -1,6 +1,6 @@
 # release-viewer
 
-コンポーネント単位でバージョンを持つ組み込みFWモノレポについて、次の3点を一望する静的Webアプリとコレクタ（サンプル実装）です。
+コンポーネント単位でバージョンを持つ組み込みFWモノレポについて、次の3点を一望する静的Webアプリと、git 履歴を走査して判定するコレクタ CLI です。
 
 - どの系列（リリースブランチ・顧客ブランチ）に、どのコンポーネントのどのバージョンが入っているか
 - hotfix がどの系列まで伝播しているか、漏れはないか
@@ -82,15 +82,15 @@ release-viewer lint-pr <repo> --series ID [--head HEAD] [--strict] [--config-ref
 | `--remote` | ローカルブランチがないときに参照するリモート（既定 `origin`）。CI の clone でもそのまま動く |
 | `--since-ref` | 指定した ref の祖先を走査しない（大規模リポジトリ向け） |
 | `--override` | `系列=ref` の形で、系列の HEAD をブランチではなく ref（`HEAD` や SHA も可）にして走査する。繰り返し可。PR をマージした後の状態を評価するのに使う（CI の `pull_request` では `refs/pull/N/merge` が HEAD になる）。設定（`.release/`）は引き続き `--config-ref` から読むので、PR が `config.toml` や `exclusions.toml` 自体を変える場合は `--config-ref HEAD` も併せて渡す |
-| `--strict` | `check` のみ。warning（patch-id のみ一致、maintenance 系列の未伝播など）も失敗扱いにする |
-| `--series` | `check` のみ。終了コードの判定（と標準エラーの一覧）を、指定した系列に紐づく違反に絞る。繰り返し可。系列に紐づかない違反（設定エラー、タグ・コミット単位の警告など）は常に対象。JSON の `violations` / `summary` は絞り込まない |
+| `--strict` | `check`・`lint-pr` のみ。warning（patch-id のみ一致、maintenance 系列の未伝播、トレーラーの位置にない Fix-ID など）も失敗扱いにする |
+| `--series` | `lint-pr` では必須で、PR の宛先の系列（1つ）。`check` では任意で、終了コードの判定（と標準エラーの一覧）を、指定した系列に紐づく違反に絞る。繰り返し可。系列に紐づかない違反（設定エラー、タグ・コミット単位の警告など）は常に対象。JSON の `violations` / `summary` は絞り込まない |
 
 `lint-pr` が検査する内容：
 
 | kind | 重大度 | 条件 |
 |---|---|---|
 | `invalid_fix_id` | error | Fix-ID の値が `fix_id_pattern` に合わない |
-| `fix_id_not_trailer` | warning | Fix-ID がトレーラーの位置にない（§5.1） |
+| `fix_id_not_trailer` | warning | Fix-ID がトレーラーの位置にない（docs/conventions.md §5.1） |
 | `cherry_pick_without_x` | error | 宛先が mainline 以外で、Fix-ID を持つのに `(cherry picked from commit <sha>)` がない |
 | `cherry_pick_source_missing` | error | `-x` の記録にある sha がリポジトリに存在しない |
 

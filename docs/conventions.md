@@ -250,7 +250,7 @@ release-viewer lint-pr <repo> --series ID [--head HEAD] [--strict] [--config-ref
   終了コードは `0`／`1`（error あり、`--strict` なら warning も）／`2`（引数・設定・git のエラー、系列が未定義、ref が解決できない）。
 - 終了コード：`0` 成功／`1` `check` で error 級の違反あり（`fix_missing`, `dependency_violation` ほか）／
   `2` 設定・引数・git のエラー、および想定外の例外（traceback を標準エラーに出す。`git` が見つからない場合を含む）。
-  `check` では警告（`patch_id_only` 等）は `--strict` 指定時のみ `1` にする。`--strict` は `check` にしかない。
+  `check` では警告（`patch_id_only` 等）は `--strict` 指定時のみ `1` にする。`--strict` は `check` と `lint-pr` にだけある（`collect` にはない）。
 
 ## 11. 出力JSONスキーマ（schema_version 1.0）
 
