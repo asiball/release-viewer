@@ -149,7 +149,7 @@ Fix-ID: FIX-123
 | 優先 | 方式 `method` | 条件 | 状態 `state` |
 |---|---|---|---|
 | 0 | `ancestry` | 単位のコミット自体が系列ブランチから到達可能（分岐前に入っていた、マージで入った等） | `applied` |
-| 1 | `trailer` | 系列に同じ Fix-ID トレーラーを持つコミットがあり、`-x` でその単位に繋がる（単位が1つなら `-x` なしでも可） | `applied` |
+| 1 | `trailer` | 系列に同じ Fix-ID を持つコミットがあり、`-x` でその単位に繋がる。`-x` がない場合は、単位が1つならそれで可、単位が複数なら patch-id がその単位と一致するもの | `applied` |
 | 2 | `cherry_pick_x` | 系列に `(cherry picked from commit <sha>)` の連鎖でその単位に繋がるコミットがある（トレーラーなし） | `applied` |
 | 3 | `patch_id` | 系列に `git patch-id --stable` が単位と一致するコミットがある | `patch_id_only` |
 | – | – | 除外宣言あり（§7） | `excluded` |
@@ -160,7 +160,14 @@ Fix-ID: FIX-123
 - `patch_id_only` は**適用済みとみなすが警告を出す**（追跡根拠が弱いため）。`check` では失敗にせず、`--strict` のときだけ失敗にする。
 - `missing` の重大度は系列が `active` なら error、`maintenance` なら warning。
 - 除外宣言があるのに実際には適用されていた場合は `applied` とし、警告 `exclusion_but_applied` を出す。
-- 衝突解消で差分が変わった cherry-pick は patch-id が一致しないので、トレーラーか `-x` が無いと `missing` になる。これは意図した挙動（規約違反を可視化する）。
+- `-x` のない Fix-ID 付きコミットが単位のどれに当たるかは、単位が1つなら自明、複数なら patch-id で決める。
+  この対応付けは伝播判定とタグの fix 集計（`fixes_included` / `fixes_added`、コミットの `fix_ids`）で共通なので、
+  マトリクスとリリース詳細の結果は矛盾しない。
+- 単位が複数の fix で、系列に `-x` のない Fix-ID 付きコミットがあるのに patch-id がどの単位とも一致しない場合
+  （衝突解消で差分が変わった等）は、そのコミットを単位に対応付けず、警告 `trailer_unmatched` を出す。
+  該当する単位は他の方式で一致しなければ `missing` のまま。
+- 衝突解消で差分が変わった cherry-pick は patch-id が一致しないので、`-x` が無い場合、単位が1つの fix ならトレーラーで、
+  複数の fix では `missing` になる。これは意図した挙動（規約違反を可視化する）。`-x` を付ければ差分が変わっても対応が取れる。
 
 ## 7. 除外宣言 `.release/exclusions.toml`
 
@@ -325,7 +332,7 @@ release-viewer check   <repo> [collect と同じオプション] [--strict]
     {
       "kind": "fix_missing",
       // error:   fix_missing(active) | dependency_violation | exclusion_without_reason
-      // warning: fix_missing(maintenance) | patch_id_only | exclusion_but_applied | stale_exclusion
+      // warning: fix_missing(maintenance) | patch_id_only | trailer_unmatched | exclusion_but_applied | stale_exclusion
       //          | tag_version_mismatch | lightweight_tag | invalid_tag | invalid_fix_id | fix_id_not_trailer
       //          | invalid_component_meta
       "severity": "error",

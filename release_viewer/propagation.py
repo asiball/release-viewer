@@ -76,6 +76,24 @@ class FixEvaluator:
             self.fix_defs[fid] = {"units": units, "trailer": shas, "linked": linked,
                                   "components": comps, "origin": origin, "origin_series": origin_series}
 
+        # -x で単位に繋がらないトレーラー付きコミット（loose）が、どの単位に当たるかを patch-id で決める。
+        # links（コミット -> 対応する単位）を伝播判定（_match_unit）とタグの fix 集計（fix_member）の両方で使う
+        self._compute_patch_ids({s for fd in self.fix_defs.values() if len(fd["units"]) > 1
+                                 for s in fd["units"] + fd["trailer"]})
+        for fid, fd in self.fix_defs.items():
+            links = {u: {u} for u in fd["units"]} | {s: set(us) for s, us in fd["linked"].items()}
+            for s in fd["trailer"]:
+                if s in links:
+                    continue
+                us = self._trailer_units(fd, s)
+                if us:
+                    links[s] = set(us)
+                else:
+                    self._violation("trailer_unmatched", "warning",
+                                    f"{fid} の Fix-ID 付きコミット {s[:10]} が fix の単位に対応付けられない"
+                                    f"（差分が変わっている）", fix=fid, series=self.owner.get(s), commit=s)
+            fd["links"] = links
+
         # 1st pass: patch-id 以外で判定。決まらなかった (系列, unit) の候補を集める
         pending: list[tuple[str, str, str, list[str]]] = []
         results: dict[tuple[str, str], dict[str, tuple[str, list[str]]]] = {}
@@ -95,12 +113,7 @@ class FixEvaluator:
                         pending.append((fid, sid, u, cands))
                 results[(fid, sid)] = matched
 
-        need = {u for _, _, u, c in pending if c} | {s for _, _, _, c in pending for s in c}
-        # trailer 付きで対応が取れないコミット（複数単位の fix）の照合にも patch-id を使う
-        for fid, fd in self.fix_defs.items():
-            if len(fd["units"]) > 1:
-                need |= set(fd["units"]) | set(fd["trailer"])
-        self._compute_patch_ids(need)
+        self._compute_patch_ids({u for _, _, u, c in pending if c} | {s for _, _, _, c in pending for s in c})
 
         for fid, sid, u, cands in pending:
             pid = self._patch_ids.get(u)
@@ -108,16 +121,11 @@ class FixEvaluator:
             if hits:
                 results[(fid, sid)][u] = ("patch_id", hits)
 
-        # 2nd pass: 状態を決める
+        # 2nd pass: 状態を決める。fix_member は判定と同じ対応付け（links と patch-id の一致）から作る
         self.fix_member: dict[str, dict[str, set[str]]] = {}  # commit -> {fix: 対応する units}
         for fid, fd in self.fix_defs.items():
-            for u in fd["units"]:
-                self._add_member(u, fid, {u})
-            for s, us in fd["linked"].items():
-                self._add_member(s, fid, set(us))
-            for s in fd["trailer"]:
-                if s not in fd["units"] and s not in fd["linked"]:
-                    self._add_member(s, fid, set(self._trailer_units(fd, s)))
+            for s, us in fd["links"].items():
+                self._add_member(s, fid, us)
         for (fid, sid), matched in results.items():
             for u, (method, shas) in matched.items():
                 for s in shas:
@@ -142,7 +150,7 @@ class FixEvaluator:
         return fixes
 
     def _trailer_units(self, fd: dict, sha: str) -> list[str]:
-        """トレーラーは持つが -x で単位に繋がらないコミットが、どの単位に当たるか。"""
+        """トレーラーは持つが -x で単位に繋がらないコミットが、どの単位に当たるか（単位が複数なら patch-id で）。"""
         if len(fd["units"]) == 1:
             return list(fd["units"])
         pid = self._patch_ids.get(sha)
@@ -155,9 +163,10 @@ class FixEvaluator:
         with_trailer = [s for s in fid_commits if s in fd["trailer"]]
         if with_trailer:
             return ("trailer", sorted(with_trailer, key=lambda s: self.commits[s].seq))
-        # -x で繋がらないトレーラー付きコミット（単位が1つならそれで足りる）
-        loose = [s for s in fd["trailer"] if s in rs.reach and s not in fd["linked"] and s not in fd["units"]]
-        if loose and len(fd["units"]) == 1:
+        # -x で繋がらないトレーラー付きコミット（links で、単位が複数なら patch-id でこの単位に対応付いたもの）
+        loose = [s for s, us in fd["links"].items()
+                 if u in us and s in rs.reach and s not in fd["linked"] and s not in fd["units"]]
+        if loose:
             return ("trailer", sorted(loose, key=lambda s: self.commits[s].seq))
         if fid_commits:
             return ("cherry_pick_x", sorted(fid_commits, key=lambda s: self.commits[s].seq))
