@@ -23,42 +23,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      # Python は uv が .python-version を読んで用意する。依存は uv.lock のとおり
+      - uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.12"
-
-      - name: Install test dependencies
-        run: pip install pytest ruff==0.16.9
+          enable-cache: true
 
       - name: Lint
-        run: ruff check .
+        run: uv run --frozen ruff check .
 
       - name: Test (collector logic against a freshly generated sample repo)
-        run: python -m pytest -q
+        run: uv run --frozen pytest -q
 
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.12"
+          enable-cache: true
 
       - name: Generate sample repository
-        run: python sample/generate_sample_repo.py build/sample-fw
+        run: uv run --frozen python sample/generate_sample_repo.py build/sample-fw
 
       - name: Collect
         run: |
           # generated_at をツール側のコミット時刻に固定し、同じ入力なら同じ JSON にする
           export SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)"
-          python -m release_viewer collect build/sample-fw --site _site --name sample-fw
+          uv run --frozen release-viewer collect build/sample-fw --site _site --name sample-fw
 
       # サンプルには意図的な違反があるので、check が 1 で終わることを確認する（CIゲートの動作確認）
       - name: Gate behaves as expected
         run: |
           set +e
-          python -m release_viewer check build/sample-fw
+          uv run --frozen release-viewer check build/sample-fw
           code=$?
           test "$code" -eq 1 || { echo "expected exit 1, got $code"; exit 1; }
 

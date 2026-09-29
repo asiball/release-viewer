@@ -24,9 +24,11 @@ git の操作は `git` コマンドを subprocess で呼んでいます。`git p
 
 ## ローカルで試す
 
+開発環境は [uv](https://docs.astral.sh/uv/) で用意します（Python は `.python-version`、開発用の依存は `uv.lock` のとおりに入る）。
+
 ```sh
-python sample/generate_sample_repo.py build/sample-fw --force
-python -m release_viewer collect build/sample-fw --site build/site
+uv run python sample/generate_sample_repo.py build/sample-fw --force
+uv run release-viewer collect build/sample-fw --site build/site
 # build/site/index.html をブラウザで直接開く（サーバー不要）
 ```
 
@@ -35,12 +37,13 @@ python -m release_viewer collect build/sample-fw --site build/site
 テスト：
 
 ```sh
-pip install pytest ruff==0.16.9
-python -m pytest -q
-ruff check .
+uv run pytest -q
+uv run ruff check .
 ```
 
-`tests/golden/data.json` はサンプルリポジトリの出力（`SOURCE_DATE_EPOCH=1790000000`、`--name sample-fw`）と完全一致を確認します。出力を意図して変えたときは `UPDATE_GOLDEN=1 python -m pytest tests/test_golden.py` で更新し、差分をレビューしてください。
+uv を使わない場合は `pip install pytest ruff==0.16.9` の後、`python -m pytest -q` と `ruff check .` を実行します（依存は `pyproject.toml` の `[dependency-groups] dev`）。
+
+`tests/golden/data.json` はサンプルリポジトリの出力（`SOURCE_DATE_EPOCH=1790000000`、`--name sample-fw`）と完全一致を確認します。出力を意図して変えたときは `UPDATE_GOLDEN=1 uv run pytest tests/test_golden.py` で更新し、差分をレビューしてください。
 
 ## 画面
 
@@ -194,6 +197,12 @@ jobs:
 ```sh
 pip install "git+https://github.com/<owner>/release-viewer@v1"
 release-viewer check path/to/fw --site site
+```
+
+uv があれば、インストールせずに試せます。
+
+```sh
+uvx --from "git+https://github.com/<owner>/release-viewer@v1" release-viewer check path/to/fw --site site
 ```
 
 コマンドの詳細は「コレクタ CLI」を参照してください。

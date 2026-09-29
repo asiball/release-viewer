@@ -5,8 +5,8 @@ description = "モノレポのリリース系列・hotfix伝播・依存制約�
 requires-python = ">=3.11"
 dependencies = []
 
-[project.optional-dependencies]
-test = ["pytest>=8"]
+[dependency-groups]
+dev = ["pytest>=8", "ruff==0.16.9"]
 
 [project.scripts]
 release-viewer = "release_viewer.__main__:main"
