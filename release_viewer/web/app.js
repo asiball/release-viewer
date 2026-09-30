@@ -218,19 +218,36 @@ function renderTree(root) {
   redraw();
 }
 
+// 系列の一覧はチップを1行（折り返しあり）に並べる。表にすると系列が多いときツリーが画面外に押し出される
 function laneLegend() {
-  return el("table", { class: "lane-legend" },
-    el("tr", null, el("th"), el("th", null, "系列"), el("th", null, "種別／状態"), el("th", null, "HEAD の構成"), el("th", null, "未伝播の fix")),
-    IDX.lanes.map((id) => {
-      const s = IDX.series.get(id);
-      const missing = IDX.missingBySeries.get(id);
-      return el("tr", null,
-        el("td", null, el("span", { class: "swatch", style: `background:${IDX.laneColor.get(id)}` })),
-        el("td", null, el("code", null, id), s.label ? ` ${s.label}` : "", s.parent ? el("div", { class: "muted" }, `親: ${s.parent} ／ 分岐点 `, el("code", null, short(s.fork_point))) : ""),
-        el("td", null, `${s.kind} ／ ${s.status}`),
-        el("td", { class: "mono" }, Object.entries(s.head_snapshot).map(([c, v]) => `${c} ${v}`).join(", ")),
-        el("td", null, missing.length ? missing.map((f) => [fixBadge(f), " "]) : el("span", { class: "ok" }, "なし")));
-    }));
+  return el("div", { class: "lane-chips" }, IDX.lanes.map((id) => {
+    const s = IDX.series.get(id);
+    const missing = IDX.missingBySeries.get(id);
+    const title = [s.label, `${s.kind} ／ ${s.status}`, s.parent ? `親: ${s.parent}` : "",
+      s.parent ? `分岐点: ${short(s.fork_point)}` : ""].filter(Boolean).join("\n");
+    return el("button", { class: "lane-chip", type: "button", title, onclick: () => showSeries(id) },
+      el("span", { class: "swatch", style: `background:${IDX.laneColor.get(id)}` }), " ", el("code", null, id),
+      s.status !== "active" ? el("span", { class: "muted" }, ` (${s.status})`) : "",
+      missing.length ? [" ", el("span", { class: "badge fix missing" }, `未伝播 ${missing.length}`)] : "");
+  }));
+}
+
+function showSeries(id) {
+  const s = IDX.series.get(id);
+  const missing = IDX.missingBySeries.get(id);
+  openPanel(
+    el("h3", null, el("span", { class: "swatch", style: `background:${IDX.laneColor.get(id)}` }), " ", id,
+      s.label ? ` ${s.label}` : ""),
+    el("dl", { class: "kv" },
+      el("dt", null, "種別"), el("dd", null, s.kind),
+      el("dt", null, "状態"), el("dd", null, s.status),
+      el("dt", null, "親"), el("dd", null, s.parent ? el("code", null, s.parent) : "—"),
+      el("dt", null, "分岐点"), el("dd", null, s.fork_point ? el("code", null, short(s.fork_point)) : "—"),
+      el("dt", null, "HEAD の構成"), el("dd", { class: "mono" },
+        Object.entries(s.head_snapshot).map(([c, v]) => el("div", null, `${c} ${v}`)))),
+    el("h3", null, "未伝播の fix"),
+    missing.length ? el("div", null, missing.map((f) => [fixBadge(f), " "])) : el("p", { class: "ok" }, "なし"),
+    el("p", null, link("#/deps/" + encodeURIComponent(id), "依存チェックへ")));
 }
 
 function drawTree(showPicks, onlyProblems) {
