@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """架空の組み込みFWモノレポ（sample-fw）を生成する。
 
 docs/conventions.md の規約に従ったリポジトリを作り、検証用に次のケースを含める。
