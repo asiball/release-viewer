@@ -1,0 +1,3957 @@
+{
+ "schema_version": "1.0",
+ "generated_at": "2026-09-21T14:13:20Z",
+ "generator": {
+  "name": "release-viewer",
+  "version": "0.1.0"
+ },
+ "repository": {
+  "name": "sample-fw",
+  "config_ref": "main",
+  "config_commit": "cd9223d216e32b130944660f80fb28d37572b239",
+  "since_ref": null,
+  "overrides": {}
+ },
+ "components": [
+  {
+   "name": "app",
+   "path": "components/app"
+  },
+  {
+   "name": "driver",
+   "path": "components/driver"
+  },
+  {
+   "name": "hal",
+   "path": "components/hal"
+  },
+  {
+   "name": "lib-comm",
+   "path": "components/lib-comm"
+  }
+ ],
+ "series": [
+  {
+   "id": "main",
+   "branch": "main",
+   "ref": "refs/heads/main",
+   "kind": "mainline",
+   "parent": null,
+   "customer": null,
+   "label": null,
+   "status": "active",
+   "tag_prefix": "fw/",
+   "head": "cd9223d216e32b130944660f80fb28d37572b239",
+   "fork_point": null,
+   "head_snapshot": {
+    "app": "1.3.0",
+    "driver": "1.1.0",
+    "hal": "1.2.0",
+    "lib-comm": "1.1.0"
+   }
+  },
+  {
+   "id": "release/1.1",
+   "branch": "release/1.1",
+   "ref": "refs/heads/release/1.1",
+   "kind": "release",
+   "parent": "main",
+   "customer": null,
+   "label": null,
+   "status": "maintenance",
+   "tag_prefix": "fw/",
+   "head": "5d590253d70ef4be452e07279389438c77043496",
+   "fork_point": "2935fcf5e88deefd36d62e5f85f4589103d92ee5",
+   "head_snapshot": {
+    "app": "1.1.1",
+    "driver": "1.0.1",
+    "hal": "1.1.1",
+    "lib-comm": "1.0.1"
+   }
+  },
+  {
+   "id": "customer/beta/1.1",
+   "branch": "customer/beta/1.1",
+   "ref": "refs/heads/customer/beta/1.1",
+   "kind": "customer",
+   "parent": "release/1.1",
+   "customer": "beta",
+   "label": "Beta 社向け 1.1",
+   "status": "active",
+   "tag_prefix": "fw-beta/",
+   "head": "ef02afee3f38551f4958f06f92822a1f6a6a11a2",
+   "fork_point": "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a",
+   "head_snapshot": {
+    "app": "1.1.0+beta.1",
+    "driver": "1.0.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.0.0"
+   }
+  },
+  {
+   "id": "release/1.2",
+   "branch": "release/1.2",
+   "ref": "refs/heads/release/1.2",
+   "kind": "release",
+   "parent": "main",
+   "customer": null,
+   "label": null,
+   "status": "active",
+   "tag_prefix": "fw/",
+   "head": "ecd3ccec4c672b43b4455248bcb44291447b8af2",
+   "fork_point": "6e00abdcd75068bb127806743f188bb64ab17670",
+   "head_snapshot": {
+    "app": "1.2.1",
+    "driver": "1.1.1",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.1"
+   }
+  },
+  {
+   "id": "customer/acme/1.2",
+   "branch": "customer/acme/1.2",
+   "ref": "refs/heads/customer/acme/1.2",
+   "kind": "customer",
+   "parent": "release/1.2",
+   "customer": "acme",
+   "label": "ACME 社向け 1.2",
+   "status": "active",
+   "tag_prefix": "fw-acme/",
+   "head": "6ebe186470b5b7a1fab40089644bc72a498079e0",
+   "fork_point": "7d06075403cf1b3841b9d63df365b398bb0dc869",
+   "head_snapshot": {
+    "app": "1.2.1",
+    "driver": "1.1.1",
+    "hal": "1.2.1+acme.1",
+    "lib-comm": "1.1.1"
+   }
+  },
+  {
+   "id": "customer/gamma/1.2",
+   "branch": "customer/gamma/1.2",
+   "ref": "refs/heads/customer/gamma/1.2",
+   "kind": "customer",
+   "parent": "release/1.2",
+   "customer": "gamma",
+   "label": "Gamma 社向け 1.2",
+   "status": "active",
+   "tag_prefix": "fw-gamma/",
+   "head": "4278b4528b77e797366c926ad8bb73219e8967a7",
+   "fork_point": "7d06075403cf1b3841b9d63df365b398bb0dc869",
+   "head_snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.0"
+   }
+  }
+ ],
+ "commits": [
+  {
+   "sha": "f2a066783ee58b7f77b1ecce5ffdddefcf1ae0d7",
+   "seq": 0,
+   "series": "main",
+   "subject": "chore: 初期インポート",
+   "author": "Sato Hanako",
+   "date": "2026-01-05T12:00:00+09:00",
+   "components": [
+    "app",
+    "driver",
+    "hal",
+    "lib-comm"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [],
+   "tags": [
+    "app/v1.0.0",
+    "driver/v1.0.0",
+    "hal/v1.0.0",
+    "lib-comm/v1.0.0"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "372e7e37dd071bd4bb362b337089be5e6c2bbfad",
+   "seq": 1,
+   "series": "main",
+   "subject": "hal: SPI の DMA 転送に対応",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-06T03:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "f2a066783ee58b7f77b1ecce5ffdddefcf1ae0d7"
+   ],
+   "tags": [
+    "hal/v1.1.0"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "2935fcf5e88deefd36d62e5f85f4589103d92ee5",
+   "seq": 2,
+   "series": "main",
+   "subject": "app: 起動シーケンスを整理",
+   "author": "Sato Hanako",
+   "date": "2026-01-06T09:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "372e7e37dd071bd4bb362b337089be5e6c2bbfad"
+   ],
+   "tags": [
+    "app/v1.1.0"
+   ],
+   "roles": [
+    "fork_point",
+    "tag"
+   ]
+  },
+  {
+   "sha": "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a",
+   "seq": 3,
+   "series": "release/1.1",
+   "subject": "release: fw 1.1.0",
+   "author": "Release Bot",
+   "date": "2026-01-06T15:00:00+09:00",
+   "components": [],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "2935fcf5e88deefd36d62e5f85f4589103d92ee5"
+   ],
+   "tags": [
+    "fw/v1.1.0"
+   ],
+   "roles": [
+    "fork_point",
+    "tag"
+   ]
+  },
+  {
+   "sha": "ab754fdd2a31eb59192c651e1e868319641b47e1",
+   "seq": 4,
+   "series": "customer/beta/1.1",
+   "subject": "beta: 顧客向け設定を追加",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-06T21:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a"
+   ],
+   "tags": [
+    "fw-beta/v1.1.0"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "4c4d7e162f6c6d7b7eb4e872dd68298f345ce637",
+   "seq": 6,
+   "series": "main",
+   "subject": "lib-comm: 再送処理を追加",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-07T06:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "476440611049963d741f8a97752eac2826fba388"
+   ],
+   "tags": [
+    "lib-comm/v1.1.0"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "31ebb47d93b51270ba9918f3758f0585a1a05c07",
+   "seq": 7,
+   "series": "main",
+   "subject": "driver: GPIO 割り込みに対応",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-07T12:00:00+09:00",
+   "components": [
+    "driver"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "4c4d7e162f6c6d7b7eb4e872dd68298f345ce637"
+   ],
+   "tags": [
+    "driver/v1.1.0"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "c383b104c45c70fbe5a382fd57072cd18c284051",
+   "seq": 8,
+   "series": "main",
+   "subject": "hal: CAN FD に対応",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-07T18:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "31ebb47d93b51270ba9918f3758f0585a1a05c07"
+   ],
+   "tags": [
+    "hal/v1.2.0"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "6e00abdcd75068bb127806743f188bb64ab17670",
+   "seq": 9,
+   "series": "main",
+   "subject": "app: CAN FD の設定を読み込む",
+   "author": "Sato Hanako",
+   "date": "2026-01-08T00:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "c383b104c45c70fbe5a382fd57072cd18c284051"
+   ],
+   "tags": [
+    "app/v1.2.0"
+   ],
+   "roles": [
+    "fork_point",
+    "tag"
+   ]
+  },
+  {
+   "sha": "7d06075403cf1b3841b9d63df365b398bb0dc869",
+   "seq": 10,
+   "series": "release/1.2",
+   "subject": "release: fw 1.2.0",
+   "author": "Release Bot",
+   "date": "2026-01-08T06:00:00+09:00",
+   "components": [],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "6e00abdcd75068bb127806743f188bb64ab17670"
+   ],
+   "tags": [
+    "fw/v1.2.0"
+   ],
+   "roles": [
+    "fork_point",
+    "tag"
+   ]
+  },
+  {
+   "sha": "dfd0f323cb9a25e55a684c2e806ab827ad7d819a",
+   "seq": 11,
+   "series": "customer/acme/1.2",
+   "subject": "acme: ACME-X1 ボード定義を追加",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-08T12:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "7d06075403cf1b3841b9d63df365b398bb0dc869"
+   ],
+   "tags": [
+    "fw-acme/v1.2.0",
+    "hal/v1.2.0+acme.1"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "49c5a679251f72c0d2084d07871ea81f14f4dfa5",
+   "seq": 12,
+   "series": "customer/gamma/1.2",
+   "subject": "gamma: 顧客向け設定を追加",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-08T21:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "7d06075403cf1b3841b9d63df365b398bb0dc869"
+   ],
+   "tags": [
+    "fw-gamma/v1.2.0"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "56b640528d28e27aa7d4c49c43932b5532ca49f5",
+   "seq": 14,
+   "series": "main",
+   "subject": "hal: I2C タイムアウト時にバスをリセットする",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-09T06:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [
+    "FIX-101"
+   ],
+   "cherry_picked_from": [],
+   "parents": [
+    "143812a63974367596126386f1632681f3937bd7"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "2a69fa733ff435c3d5f7586b144ac25ea9146721",
+   "seq": 15,
+   "series": "release/1.2",
+   "subject": "hal: I2C タイムアウト時にバスをリセットする",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-09T09:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [
+    "FIX-101"
+   ],
+   "cherry_picked_from": [
+    "56b640528d28e27aa7d4c49c43932b5532ca49f5"
+   ],
+   "parents": [
+    "7d06075403cf1b3841b9d63df365b398bb0dc869"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "01d684d25cf9bf74a45e351c3c7a6027bec9ba82",
+   "seq": 16,
+   "series": "release/1.1",
+   "subject": "hal: I2C タイムアウト時にバスをリセットする",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-09T12:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [
+    "FIX-101"
+   ],
+   "cherry_picked_from": [
+    "56b640528d28e27aa7d4c49c43932b5532ca49f5"
+   ],
+   "parents": [
+    "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "a6c34ecac67441150785238d1918335659539c3a",
+   "seq": 17,
+   "series": "customer/beta/1.1",
+   "subject": "hal: I2C タイムアウト時にバスをリセットする",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-09T15:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [
+    "FIX-101"
+   ],
+   "cherry_picked_from": [
+    "56b640528d28e27aa7d4c49c43932b5532ca49f5"
+   ],
+   "parents": [
+    "ab754fdd2a31eb59192c651e1e868319641b47e1"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "d4b13b499f7e8314259248dad251147f1ed913f7",
+   "seq": 18,
+   "series": "customer/gamma/1.2",
+   "subject": "hal: I2C タイムアウト時にバスをリセットする",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-09T18:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [
+    "FIX-101"
+   ],
+   "cherry_picked_from": [
+    "56b640528d28e27aa7d4c49c43932b5532ca49f5"
+   ],
+   "parents": [
+    "49c5a679251f72c0d2084d07871ea81f14f4dfa5"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "87650f3acfd0543fede5124b6901b5c141abbbf8",
+   "seq": 19,
+   "series": "release/1.2",
+   "subject": "lib-comm: 再送カウンタのオーバーフローを修正",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-09T21:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-102"
+   ],
+   "cherry_picked_from": [],
+   "parents": [
+    "2a69fa733ff435c3d5f7586b144ac25ea9146721"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "a83484ea00568394bf889f3b78a88f8e4c39c326",
+   "seq": 20,
+   "series": "main",
+   "subject": "lib-comm: 再送カウンタのオーバーフローを修正",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-10T00:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-102"
+   ],
+   "cherry_picked_from": [
+    "87650f3acfd0543fede5124b6901b5c141abbbf8"
+   ],
+   "parents": [
+    "56b640528d28e27aa7d4c49c43932b5532ca49f5"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+   "seq": 22,
+   "series": "main",
+   "subject": "lib-comm: フレーム長の上限チェックを追加",
+   "author": "Sato Hanako",
+   "date": "2026-01-10T06:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [],
+   "parents": [
+    "01b668ad5bb420277eaa914c9a626b1b0e0d9542"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "c07a77f2ac4fe305814d30a66fce8593a79ed9e9",
+   "seq": 23,
+   "series": "main",
+   "subject": "lib-comm: CRC 初期値を仕様どおり 0xFFFF にする",
+   "author": "Sato Hanako",
+   "date": "2026-01-10T09:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [],
+   "parents": [
+    "83570d28c51e3fe73bbe16636b25f7635fd71ecb"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "2c50cb9771d007b1133b49884d906e0a0087ad2c",
+   "seq": 24,
+   "series": "release/1.2",
+   "subject": "lib-comm: フレーム長の上限チェックを追加",
+   "author": "Sato Hanako",
+   "date": "2026-01-10T12:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [
+    "83570d28c51e3fe73bbe16636b25f7635fd71ecb"
+   ],
+   "parents": [
+    "87650f3acfd0543fede5124b6901b5c141abbbf8"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "1a65ad804386285fc3d90bb4ed0e75d81f4adaa7",
+   "seq": 25,
+   "series": "release/1.2",
+   "subject": "lib-comm: CRC 初期値を仕様どおり 0xFFFF にする",
+   "author": "Sato Hanako",
+   "date": "2026-01-10T15:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [
+    "c07a77f2ac4fe305814d30a66fce8593a79ed9e9"
+   ],
+   "parents": [
+    "2c50cb9771d007b1133b49884d906e0a0087ad2c"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "26611fc1e47080c0b65adeed9ad45e8eba05c8fc",
+   "seq": 26,
+   "series": "release/1.1",
+   "subject": "lib-comm: フレーム長の上限チェックを追加",
+   "author": "Sato Hanako",
+   "date": "2026-01-10T18:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [
+    "83570d28c51e3fe73bbe16636b25f7635fd71ecb"
+   ],
+   "parents": [
+    "01d684d25cf9bf74a45e351c3c7a6027bec9ba82"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "661f0d68b31977ea718beb75df3c7af665d97fd7",
+   "seq": 27,
+   "series": "release/1.1",
+   "subject": "lib-comm: CRC 初期値を仕様どおり 0xFFFF にする",
+   "author": "Sato Hanako",
+   "date": "2026-01-10T21:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [
+    "c07a77f2ac4fe305814d30a66fce8593a79ed9e9"
+   ],
+   "parents": [
+    "26611fc1e47080c0b65adeed9ad45e8eba05c8fc"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "307b6bbd8d09c91c393e7ac91540ede0d159f587",
+   "seq": 28,
+   "series": "customer/beta/1.1",
+   "subject": "lib-comm: フレーム長の上限チェックを追加",
+   "author": "Sato Hanako",
+   "date": "2026-01-11T00:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [
+    "83570d28c51e3fe73bbe16636b25f7635fd71ecb"
+   ],
+   "parents": [
+    "a6c34ecac67441150785238d1918335659539c3a"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "30f925b8679a7eb4f9657d6195e4ccf5ed91bd23",
+   "seq": 29,
+   "series": "customer/beta/1.1",
+   "subject": "lib-comm: CRC 初期値を仕様どおり 0xFFFF にする",
+   "author": "Sato Hanako",
+   "date": "2026-01-11T03:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [
+    "c07a77f2ac4fe305814d30a66fce8593a79ed9e9"
+   ],
+   "parents": [
+    "307b6bbd8d09c91c393e7ac91540ede0d159f587"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "f5481876cac2b8e214631b2d70c483a0595004f9",
+   "seq": 30,
+   "series": "customer/gamma/1.2",
+   "subject": "lib-comm: フレーム長の上限チェックを追加",
+   "author": "Sato Hanako",
+   "date": "2026-01-11T06:00:00+09:00",
+   "components": [
+    "lib-comm"
+   ],
+   "fix_ids": [
+    "FIX-105"
+   ],
+   "cherry_picked_from": [
+    "83570d28c51e3fe73bbe16636b25f7635fd71ecb"
+   ],
+   "parents": [
+    "d4b13b499f7e8314259248dad251147f1ed913f7"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f",
+   "seq": 31,
+   "series": "release/1.2",
+   "subject": "release: fw 1.2.1",
+   "author": "Release Bot",
+   "date": "2026-01-11T09:00:00+09:00",
+   "components": [
+    "hal",
+    "lib-comm"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "1a65ad804386285fc3d90bb4ed0e75d81f4adaa7"
+   ],
+   "tags": [
+    "fw/v1.2.1",
+    "hal/v1.2.1",
+    "lib-comm/v1.1.1"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "e94189a6dae8eaa40439ecfc1480b47fd45b46d3",
+   "seq": 32,
+   "series": "customer/acme/1.2",
+   "subject": "Merge fw/v1.2.1 into customer/acme/1.2",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-12T00:00:00+09:00",
+   "components": [],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "dfd0f323cb9a25e55a684c2e806ab827ad7d819a",
+    "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f"
+   ],
+   "tags": [
+    "fw-acme/v1.2.1",
+    "hal/v1.2.1+acme.1"
+   ],
+   "roles": [
+    "merge",
+    "tag"
+   ]
+  },
+  {
+   "sha": "f00e72b360d7a50140b4776d6aebbb275fceb781",
+   "seq": 33,
+   "series": "main",
+   "subject": "driver: GPIO のデバウンス時間を 20ms にする",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-12T09:00:00+09:00",
+   "components": [
+    "driver"
+   ],
+   "fix_ids": [
+    "FIX-103"
+   ],
+   "cherry_picked_from": [],
+   "parents": [
+    "c07a77f2ac4fe305814d30a66fce8593a79ed9e9"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "1833f8aaa276275790286f6059eb7a0449f8e764",
+   "seq": 34,
+   "series": "release/1.2",
+   "subject": "driver: GPIO のデバウンス時間を 20ms にする",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-12T12:00:00+09:00",
+   "components": [
+    "driver"
+   ],
+   "fix_ids": [
+    "FIX-103"
+   ],
+   "cherry_picked_from": [
+    "f00e72b360d7a50140b4776d6aebbb275fceb781"
+   ],
+   "parents": [
+    "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "11634dd5df9feaed8555a9c30b1851fb5a20c52d",
+   "seq": 35,
+   "series": "customer/acme/1.2",
+   "subject": "driver: GPIO のデバウンス時間を 20ms にする",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-12T15:00:00+09:00",
+   "components": [
+    "driver"
+   ],
+   "fix_ids": [
+    "FIX-103"
+   ],
+   "cherry_picked_from": [
+    "f00e72b360d7a50140b4776d6aebbb275fceb781",
+    "1833f8aaa276275790286f6059eb7a0449f8e764"
+   ],
+   "parents": [
+    "e94189a6dae8eaa40439ecfc1480b47fd45b46d3"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "69847fe8dc9887776cf167baa64383927be7d738",
+   "seq": 36,
+   "series": "customer/gamma/1.2",
+   "subject": "driver: GPIO のデバウンス時間を 20ms にする",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-12T18:00:00+09:00",
+   "components": [
+    "driver"
+   ],
+   "fix_ids": [
+    "FIX-103"
+   ],
+   "cherry_picked_from": [
+    "f00e72b360d7a50140b4776d6aebbb275fceb781"
+   ],
+   "parents": [
+    "f5481876cac2b8e214631b2d70c483a0595004f9"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "9fbe5e692b24aa1df1c5254b24b6bbad3ca7ca6e",
+   "seq": 37,
+   "series": "customer/beta/1.1",
+   "subject": "driver: GPIO のデバウンス時間を 20ms にする",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-12T21:00:00+09:00",
+   "components": [
+    "driver"
+   ],
+   "fix_ids": [
+    "FIX-103"
+   ],
+   "cherry_picked_from": [
+    "f00e72b360d7a50140b4776d6aebbb275fceb781"
+   ],
+   "parents": [
+    "30f925b8679a7eb4f9657d6195e4ccf5ed91bd23"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "d1310b74625821030355a4c82d85732d7838f5cf",
+   "seq": 38,
+   "series": "release/1.1",
+   "subject": "driver: デバウンス時間の修正を 1.1 系へ移植",
+   "author": "Suzuki Ichiro",
+   "date": "2026-01-13T00:00:00+09:00",
+   "components": [
+    "driver"
+   ],
+   "fix_ids": [
+    "FIX-103"
+   ],
+   "cherry_picked_from": [],
+   "parents": [
+    "661f0d68b31977ea718beb75df3c7af665d97fd7"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+   "seq": 39,
+   "series": "main",
+   "subject": "app: ウォッチドッグ再起動時にログが欠落する問題を修正",
+   "author": "Sato Hanako",
+   "date": "2026-01-13T03:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [
+    "FIX-104"
+   ],
+   "cherry_picked_from": [],
+   "parents": [
+    "f00e72b360d7a50140b4776d6aebbb275fceb781"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "d8c96dc3c341cc861a0795b27425486c4a5f7920",
+   "seq": 40,
+   "series": "release/1.2",
+   "subject": "app: WDT リセット前にログを書き出す（backport）",
+   "author": "Sato Hanako",
+   "date": "2026-01-13T06:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [
+    "FIX-104"
+   ],
+   "cherry_picked_from": [
+    "dcaee669ef06ab1b98ea7f9d019e82f690e34725"
+   ],
+   "parents": [
+    "1833f8aaa276275790286f6059eb7a0449f8e764"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "66e31426e0209c7b2761797860009c879d1f0776",
+   "seq": 41,
+   "series": "customer/acme/1.2",
+   "subject": "app: WDT リセット前にログを書き出す（backport）",
+   "author": "Sato Hanako",
+   "date": "2026-01-13T09:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [
+    "FIX-104"
+   ],
+   "cherry_picked_from": [
+    "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "d8c96dc3c341cc861a0795b27425486c4a5f7920"
+   ],
+   "parents": [
+    "11634dd5df9feaed8555a9c30b1851fb5a20c52d"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "399b93b990eb058c506cef588ccbd8523a8f9278",
+   "seq": 42,
+   "series": "customer/gamma/1.2",
+   "subject": "app: ウォッチドッグ再起動時にログが欠落する問題を修正",
+   "author": "Sato Hanako",
+   "date": "2026-01-13T12:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [
+    "FIX-104"
+   ],
+   "cherry_picked_from": [
+    "dcaee669ef06ab1b98ea7f9d019e82f690e34725"
+   ],
+   "parents": [
+    "69847fe8dc9887776cf167baa64383927be7d738"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "117bcb427ec9675384d0955c19f8cc477b18b7c6",
+   "seq": 43,
+   "series": "release/1.1",
+   "subject": "app: ウォッチドッグ再起動時にログが欠落する問題を修正",
+   "author": "Sato Hanako",
+   "date": "2026-01-13T15:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [
+    "FIX-104"
+   ],
+   "cherry_picked_from": [
+    "dcaee669ef06ab1b98ea7f9d019e82f690e34725"
+   ],
+   "parents": [
+    "d1310b74625821030355a4c82d85732d7838f5cf"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "6a489b98071171492f28fcba19fe120755d13d2c",
+   "seq": 44,
+   "series": "customer/beta/1.1",
+   "subject": "app: ウォッチドッグ再起動時にログが欠落する問題を修正",
+   "author": "Sato Hanako",
+   "date": "2026-01-13T18:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [
+    "FIX-104"
+   ],
+   "cherry_picked_from": [
+    "dcaee669ef06ab1b98ea7f9d019e82f690e34725"
+   ],
+   "parents": [
+    "9fbe5e692b24aa1df1c5254b24b6bbad3ca7ca6e"
+   ],
+   "tags": [],
+   "roles": [
+    "fix"
+   ]
+  },
+  {
+   "sha": "5d590253d70ef4be452e07279389438c77043496",
+   "seq": 45,
+   "series": "release/1.1",
+   "subject": "release: fw 1.1.1",
+   "author": "Release Bot",
+   "date": "2026-01-13T21:00:00+09:00",
+   "components": [
+    "app",
+    "driver",
+    "hal",
+    "lib-comm"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "117bcb427ec9675384d0955c19f8cc477b18b7c6"
+   ],
+   "tags": [
+    "app/v1.1.1",
+    "driver/v1.0.1",
+    "fw/v1.1.1",
+    "hal/v1.1.1",
+    "lib-comm/v1.0.1"
+   ],
+   "roles": [
+    "head",
+    "tag"
+   ]
+  },
+  {
+   "sha": "e1d7d26ffeead5472406cab8e9791c9a8dcd2222",
+   "seq": 46,
+   "series": "customer/beta/1.1",
+   "subject": "app: CAN FD 設定の読み込みをバックポート（Beta 社要望）",
+   "author": "Tanaka Jiro",
+   "date": "2026-01-14T15:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "6a489b98071171492f28fcba19fe120755d13d2c"
+   ],
+   "tags": [
+    "app/v1.1.0+beta.1"
+   ],
+   "roles": [
+    "tag"
+   ]
+  },
+  {
+   "sha": "ef02afee3f38551f4958f06f92822a1f6a6a11a2",
+   "seq": 47,
+   "series": "customer/beta/1.1",
+   "subject": "release: fw-beta 1.1.1",
+   "author": "Release Bot",
+   "date": "2026-01-14T21:00:00+09:00",
+   "components": [],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "e1d7d26ffeead5472406cab8e9791c9a8dcd2222"
+   ],
+   "tags": [
+    "fw-beta/v1.1.1"
+   ],
+   "roles": [
+    "head",
+    "tag"
+   ]
+  },
+  {
+   "sha": "ecd3ccec4c672b43b4455248bcb44291447b8af2",
+   "seq": 48,
+   "series": "release/1.2",
+   "subject": "release: fw 1.2.2",
+   "author": "Release Bot",
+   "date": "2026-01-15T03:00:00+09:00",
+   "components": [
+    "app",
+    "driver"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "d8c96dc3c341cc861a0795b27425486c4a5f7920"
+   ],
+   "tags": [
+    "app/v1.2.1",
+    "driver/v1.1.1",
+    "fw/v1.2.2"
+   ],
+   "roles": [
+    "head",
+    "tag"
+   ]
+  },
+  {
+   "sha": "6ebe186470b5b7a1fab40089644bc72a498079e0",
+   "seq": 49,
+   "series": "customer/acme/1.2",
+   "subject": "release: fw-acme 1.2.2",
+   "author": "Release Bot",
+   "date": "2026-01-15T15:00:00+09:00",
+   "components": [
+    "app",
+    "driver"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "66e31426e0209c7b2761797860009c879d1f0776"
+   ],
+   "tags": [
+    "fw-acme/v1.2.2"
+   ],
+   "roles": [
+    "head",
+    "tag"
+   ]
+  },
+  {
+   "sha": "4278b4528b77e797366c926ad8bb73219e8967a7",
+   "seq": 50,
+   "series": "customer/gamma/1.2",
+   "subject": "release: fw-gamma 1.2.1",
+   "author": "Release Bot",
+   "date": "2026-01-15T21:00:00+09:00",
+   "components": [
+    "hal"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "399b93b990eb058c506cef588ccbd8523a8f9278"
+   ],
+   "tags": [
+    "fw-gamma/v1.2.1"
+   ],
+   "roles": [
+    "head",
+    "tag"
+   ]
+  },
+  {
+   "sha": "cd9223d216e32b130944660f80fb28d37572b239",
+   "seq": 51,
+   "series": "main",
+   "subject": "app: 設定画面を刷新",
+   "author": "Sato Hanako",
+   "date": "2026-01-16T03:00:00+09:00",
+   "components": [
+    "app"
+   ],
+   "fix_ids": [],
+   "cherry_picked_from": [],
+   "parents": [
+    "dcaee669ef06ab1b98ea7f9d019e82f690e34725"
+   ],
+   "tags": [
+    "app/v1.3.0"
+   ],
+   "roles": [
+    "head",
+    "tag"
+   ]
+  }
+ ],
+ "graph": {
+  "edges": [
+   {
+    "from": "f2a066783ee58b7f77b1ecce5ffdddefcf1ae0d7",
+    "to": "372e7e37dd071bd4bb362b337089be5e6c2bbfad",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "372e7e37dd071bd4bb362b337089be5e6c2bbfad",
+    "to": "2935fcf5e88deefd36d62e5f85f4589103d92ee5",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "2935fcf5e88deefd36d62e5f85f4589103d92ee5",
+    "to": "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a",
+    "hidden_commits": 0,
+    "kind": "fork"
+   },
+   {
+    "from": "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a",
+    "to": "ab754fdd2a31eb59192c651e1e868319641b47e1",
+    "hidden_commits": 0,
+    "kind": "fork"
+   },
+   {
+    "from": "2935fcf5e88deefd36d62e5f85f4589103d92ee5",
+    "to": "4c4d7e162f6c6d7b7eb4e872dd68298f345ce637",
+    "hidden_commits": 1,
+    "kind": "first_parent"
+   },
+   {
+    "from": "4c4d7e162f6c6d7b7eb4e872dd68298f345ce637",
+    "to": "31ebb47d93b51270ba9918f3758f0585a1a05c07",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "31ebb47d93b51270ba9918f3758f0585a1a05c07",
+    "to": "c383b104c45c70fbe5a382fd57072cd18c284051",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "c383b104c45c70fbe5a382fd57072cd18c284051",
+    "to": "6e00abdcd75068bb127806743f188bb64ab17670",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "6e00abdcd75068bb127806743f188bb64ab17670",
+    "to": "7d06075403cf1b3841b9d63df365b398bb0dc869",
+    "hidden_commits": 0,
+    "kind": "fork"
+   },
+   {
+    "from": "7d06075403cf1b3841b9d63df365b398bb0dc869",
+    "to": "dfd0f323cb9a25e55a684c2e806ab827ad7d819a",
+    "hidden_commits": 0,
+    "kind": "fork"
+   },
+   {
+    "from": "7d06075403cf1b3841b9d63df365b398bb0dc869",
+    "to": "49c5a679251f72c0d2084d07871ea81f14f4dfa5",
+    "hidden_commits": 0,
+    "kind": "fork"
+   },
+   {
+    "from": "6e00abdcd75068bb127806743f188bb64ab17670",
+    "to": "56b640528d28e27aa7d4c49c43932b5532ca49f5",
+    "hidden_commits": 1,
+    "kind": "first_parent"
+   },
+   {
+    "from": "7d06075403cf1b3841b9d63df365b398bb0dc869",
+    "to": "2a69fa733ff435c3d5f7586b144ac25ea9146721",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "56b640528d28e27aa7d4c49c43932b5532ca49f5",
+    "to": "2a69fa733ff435c3d5f7586b144ac25ea9146721",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a",
+    "to": "01d684d25cf9bf74a45e351c3c7a6027bec9ba82",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "56b640528d28e27aa7d4c49c43932b5532ca49f5",
+    "to": "01d684d25cf9bf74a45e351c3c7a6027bec9ba82",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "ab754fdd2a31eb59192c651e1e868319641b47e1",
+    "to": "a6c34ecac67441150785238d1918335659539c3a",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "56b640528d28e27aa7d4c49c43932b5532ca49f5",
+    "to": "a6c34ecac67441150785238d1918335659539c3a",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "49c5a679251f72c0d2084d07871ea81f14f4dfa5",
+    "to": "d4b13b499f7e8314259248dad251147f1ed913f7",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "56b640528d28e27aa7d4c49c43932b5532ca49f5",
+    "to": "d4b13b499f7e8314259248dad251147f1ed913f7",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "2a69fa733ff435c3d5f7586b144ac25ea9146721",
+    "to": "87650f3acfd0543fede5124b6901b5c141abbbf8",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "56b640528d28e27aa7d4c49c43932b5532ca49f5",
+    "to": "a83484ea00568394bf889f3b78a88f8e4c39c326",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "87650f3acfd0543fede5124b6901b5c141abbbf8",
+    "to": "a83484ea00568394bf889f3b78a88f8e4c39c326",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "a83484ea00568394bf889f3b78a88f8e4c39c326",
+    "to": "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+    "hidden_commits": 1,
+    "kind": "first_parent"
+   },
+   {
+    "from": "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+    "to": "c07a77f2ac4fe305814d30a66fce8593a79ed9e9",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "87650f3acfd0543fede5124b6901b5c141abbbf8",
+    "to": "2c50cb9771d007b1133b49884d906e0a0087ad2c",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+    "to": "2c50cb9771d007b1133b49884d906e0a0087ad2c",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "c07a77f2ac4fe305814d30a66fce8593a79ed9e9",
+    "to": "1a65ad804386285fc3d90bb4ed0e75d81f4adaa7",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "2c50cb9771d007b1133b49884d906e0a0087ad2c",
+    "to": "1a65ad804386285fc3d90bb4ed0e75d81f4adaa7",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "01d684d25cf9bf74a45e351c3c7a6027bec9ba82",
+    "to": "26611fc1e47080c0b65adeed9ad45e8eba05c8fc",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+    "to": "26611fc1e47080c0b65adeed9ad45e8eba05c8fc",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "c07a77f2ac4fe305814d30a66fce8593a79ed9e9",
+    "to": "661f0d68b31977ea718beb75df3c7af665d97fd7",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "26611fc1e47080c0b65adeed9ad45e8eba05c8fc",
+    "to": "661f0d68b31977ea718beb75df3c7af665d97fd7",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "a6c34ecac67441150785238d1918335659539c3a",
+    "to": "307b6bbd8d09c91c393e7ac91540ede0d159f587",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+    "to": "307b6bbd8d09c91c393e7ac91540ede0d159f587",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "c07a77f2ac4fe305814d30a66fce8593a79ed9e9",
+    "to": "30f925b8679a7eb4f9657d6195e4ccf5ed91bd23",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "307b6bbd8d09c91c393e7ac91540ede0d159f587",
+    "to": "30f925b8679a7eb4f9657d6195e4ccf5ed91bd23",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "d4b13b499f7e8314259248dad251147f1ed913f7",
+    "to": "f5481876cac2b8e214631b2d70c483a0595004f9",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+    "to": "f5481876cac2b8e214631b2d70c483a0595004f9",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "1a65ad804386285fc3d90bb4ed0e75d81f4adaa7",
+    "to": "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "dfd0f323cb9a25e55a684c2e806ab827ad7d819a",
+    "to": "e94189a6dae8eaa40439ecfc1480b47fd45b46d3",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f",
+    "to": "e94189a6dae8eaa40439ecfc1480b47fd45b46d3",
+    "hidden_commits": 0,
+    "kind": "merge"
+   },
+   {
+    "from": "c07a77f2ac4fe305814d30a66fce8593a79ed9e9",
+    "to": "f00e72b360d7a50140b4776d6aebbb275fceb781",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f",
+    "to": "1833f8aaa276275790286f6059eb7a0449f8e764",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "f00e72b360d7a50140b4776d6aebbb275fceb781",
+    "to": "1833f8aaa276275790286f6059eb7a0449f8e764",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "e94189a6dae8eaa40439ecfc1480b47fd45b46d3",
+    "to": "11634dd5df9feaed8555a9c30b1851fb5a20c52d",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "f00e72b360d7a50140b4776d6aebbb275fceb781",
+    "to": "11634dd5df9feaed8555a9c30b1851fb5a20c52d",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "1833f8aaa276275790286f6059eb7a0449f8e764",
+    "to": "11634dd5df9feaed8555a9c30b1851fb5a20c52d",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "f5481876cac2b8e214631b2d70c483a0595004f9",
+    "to": "69847fe8dc9887776cf167baa64383927be7d738",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "f00e72b360d7a50140b4776d6aebbb275fceb781",
+    "to": "69847fe8dc9887776cf167baa64383927be7d738",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "30f925b8679a7eb4f9657d6195e4ccf5ed91bd23",
+    "to": "9fbe5e692b24aa1df1c5254b24b6bbad3ca7ca6e",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "f00e72b360d7a50140b4776d6aebbb275fceb781",
+    "to": "9fbe5e692b24aa1df1c5254b24b6bbad3ca7ca6e",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "661f0d68b31977ea718beb75df3c7af665d97fd7",
+    "to": "d1310b74625821030355a4c82d85732d7838f5cf",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "f00e72b360d7a50140b4776d6aebbb275fceb781",
+    "to": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "1833f8aaa276275790286f6059eb7a0449f8e764",
+    "to": "d8c96dc3c341cc861a0795b27425486c4a5f7920",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "to": "d8c96dc3c341cc861a0795b27425486c4a5f7920",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "11634dd5df9feaed8555a9c30b1851fb5a20c52d",
+    "to": "66e31426e0209c7b2761797860009c879d1f0776",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "to": "66e31426e0209c7b2761797860009c879d1f0776",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "d8c96dc3c341cc861a0795b27425486c4a5f7920",
+    "to": "66e31426e0209c7b2761797860009c879d1f0776",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "69847fe8dc9887776cf167baa64383927be7d738",
+    "to": "399b93b990eb058c506cef588ccbd8523a8f9278",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "to": "399b93b990eb058c506cef588ccbd8523a8f9278",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "d1310b74625821030355a4c82d85732d7838f5cf",
+    "to": "117bcb427ec9675384d0955c19f8cc477b18b7c6",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "to": "117bcb427ec9675384d0955c19f8cc477b18b7c6",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "9fbe5e692b24aa1df1c5254b24b6bbad3ca7ca6e",
+    "to": "6a489b98071171492f28fcba19fe120755d13d2c",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "to": "6a489b98071171492f28fcba19fe120755d13d2c",
+    "hidden_commits": 0,
+    "kind": "cherry_pick"
+   },
+   {
+    "from": "117bcb427ec9675384d0955c19f8cc477b18b7c6",
+    "to": "5d590253d70ef4be452e07279389438c77043496",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "6a489b98071171492f28fcba19fe120755d13d2c",
+    "to": "e1d7d26ffeead5472406cab8e9791c9a8dcd2222",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "e1d7d26ffeead5472406cab8e9791c9a8dcd2222",
+    "to": "ef02afee3f38551f4958f06f92822a1f6a6a11a2",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "d8c96dc3c341cc861a0795b27425486c4a5f7920",
+    "to": "ecd3ccec4c672b43b4455248bcb44291447b8af2",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "66e31426e0209c7b2761797860009c879d1f0776",
+    "to": "6ebe186470b5b7a1fab40089644bc72a498079e0",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "399b93b990eb058c506cef588ccbd8523a8f9278",
+    "to": "4278b4528b77e797366c926ad8bb73219e8967a7",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   },
+   {
+    "from": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "to": "cd9223d216e32b130944660f80fb28d37572b239",
+    "hidden_commits": 0,
+    "kind": "first_parent"
+   }
+  ]
+ },
+ "tags": [
+  {
+   "name": "app/v1.0.0",
+   "kind": "component",
+   "component": "app",
+   "version": "1.0.0",
+   "commit": "f2a066783ee58b7f77b1ecce5ffdddefcf1ae0d7",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-06T00:00:00+09:00",
+   "snapshot": {
+    "app": "1.0.0",
+    "driver": "1.0.0",
+    "hal": "1.0.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": null,
+   "diff": [],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "driver/v1.0.0",
+   "kind": "component",
+   "component": "driver",
+   "version": "1.0.0",
+   "commit": "f2a066783ee58b7f77b1ecce5ffdddefcf1ae0d7",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-05T15:00:00+09:00",
+   "snapshot": {
+    "app": "1.0.0",
+    "driver": "1.0.0",
+    "hal": "1.0.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": null,
+   "diff": [],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "hal/v1.0.0",
+   "kind": "component",
+   "component": "hal",
+   "version": "1.0.0",
+   "commit": "f2a066783ee58b7f77b1ecce5ffdddefcf1ae0d7",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-05T18:00:00+09:00",
+   "snapshot": {
+    "app": "1.0.0",
+    "driver": "1.0.0",
+    "hal": "1.0.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": null,
+   "diff": [],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "lib-comm/v1.0.0",
+   "kind": "component",
+   "component": "lib-comm",
+   "version": "1.0.0",
+   "commit": "f2a066783ee58b7f77b1ecce5ffdddefcf1ae0d7",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-05T21:00:00+09:00",
+   "snapshot": {
+    "app": "1.0.0",
+    "driver": "1.0.0",
+    "hal": "1.0.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": null,
+   "diff": [],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "hal/v1.1.0",
+   "kind": "component",
+   "component": "hal",
+   "version": "1.1.0",
+   "commit": "372e7e37dd071bd4bb362b337089be5e6c2bbfad",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-06T06:00:00+09:00",
+   "snapshot": {
+    "app": "1.0.0",
+    "driver": "1.0.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": "hal/v1.0.0",
+   "diff": [
+    {
+     "component": "hal",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "app/v1.1.0",
+   "kind": "component",
+   "component": "app",
+   "version": "1.1.0",
+   "commit": "2935fcf5e88deefd36d62e5f85f4589103d92ee5",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-06T12:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.0",
+    "driver": "1.0.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": "app/v1.0.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "hal",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "fw/v1.1.0",
+   "kind": "release",
+   "component": null,
+   "version": "1.1.0",
+   "commit": "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a",
+   "series": "release/1.1",
+   "annotated": true,
+   "date": "2026-01-06T18:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.0",
+    "driver": "1.0.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": null,
+   "diff": [],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "fw-beta/v1.1.0",
+   "kind": "release",
+   "component": null,
+   "version": "1.1.0",
+   "commit": "ab754fdd2a31eb59192c651e1e868319641b47e1",
+   "series": "customer/beta/1.1",
+   "annotated": true,
+   "date": "2026-01-07T00:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.0",
+    "driver": "1.0.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": "fw/v1.1.0",
+   "diff": [],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "lib-comm/v1.1.0",
+   "kind": "component",
+   "component": "lib-comm",
+   "version": "1.1.0",
+   "commit": "4c4d7e162f6c6d7b7eb4e872dd68298f345ce637",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-07T09:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.0",
+    "driver": "1.0.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "lib-comm/v1.0.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "hal",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "driver/v1.1.0",
+   "kind": "component",
+   "component": "driver",
+   "version": "1.1.0",
+   "commit": "31ebb47d93b51270ba9918f3758f0585a1a05c07",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-07T15:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.0",
+    "driver": "1.1.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "driver/v1.0.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "hal",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "hal/v1.2.0",
+   "kind": "component",
+   "component": "hal",
+   "version": "1.2.0",
+   "commit": "c383b104c45c70fbe5a382fd57072cd18c284051",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-07T21:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.0",
+    "driver": "1.1.0",
+    "hal": "1.2.0",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "hal/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "hal",
+     "from": "1.1.0",
+     "to": "1.2.0"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "app/v1.2.0",
+   "kind": "component",
+   "component": "app",
+   "version": "1.2.0",
+   "commit": "6e00abdcd75068bb127806743f188bb64ab17670",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-08T03:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.0",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "app/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.2.0"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "hal",
+     "from": "1.1.0",
+     "to": "1.2.0"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "fw/v1.2.0",
+   "kind": "release",
+   "component": null,
+   "version": "1.2.0",
+   "commit": "7d06075403cf1b3841b9d63df365b398bb0dc869",
+   "series": "release/1.2",
+   "annotated": true,
+   "date": "2026-01-08T09:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.0",
+    "lib-comm": "1.1.0"
+   },
+   "previous": null,
+   "diff": [],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "fw-acme/v1.2.0",
+   "kind": "release",
+   "component": null,
+   "version": "1.2.0",
+   "commit": "dfd0f323cb9a25e55a684c2e806ab827ad7d819a",
+   "series": "customer/acme/1.2",
+   "annotated": true,
+   "date": "2026-01-08T18:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.0+acme.1",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "fw/v1.2.0",
+   "diff": [
+    {
+     "component": "hal",
+     "from": "1.2.0",
+     "to": "1.2.0+acme.1"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "hal/v1.2.0+acme.1",
+   "kind": "component",
+   "component": "hal",
+   "version": "1.2.0+acme.1",
+   "commit": "dfd0f323cb9a25e55a684c2e806ab827ad7d819a",
+   "series": "customer/acme/1.2",
+   "annotated": true,
+   "date": "2026-01-08T15:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.0+acme.1",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "hal/v1.2.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.2.0"
+    },
+    {
+     "component": "hal",
+     "from": "1.2.0",
+     "to": "1.2.0+acme.1"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "fw-gamma/v1.2.0",
+   "kind": "release",
+   "component": null,
+   "version": "1.2.0",
+   "commit": "49c5a679251f72c0d2084d07871ea81f14f4dfa5",
+   "series": "customer/gamma/1.2",
+   "annotated": true,
+   "date": "2026-01-09T00:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.0",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "fw/v1.2.0",
+   "diff": [],
+   "fixes_added": [],
+   "fixes_included": []
+  },
+  {
+   "name": "fw/v1.2.1",
+   "kind": "release",
+   "component": null,
+   "version": "1.2.1",
+   "commit": "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f",
+   "series": "release/1.2",
+   "annotated": true,
+   "date": "2026-01-11T18:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "fw/v1.2.0",
+   "diff": [
+    {
+     "component": "hal",
+     "from": "1.2.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-101",
+    "FIX-102",
+    "FIX-105"
+   ],
+   "fixes_included": [
+    "FIX-101",
+    "FIX-102",
+    "FIX-105"
+   ]
+  },
+  {
+   "name": "hal/v1.2.1",
+   "kind": "component",
+   "component": "hal",
+   "version": "1.2.1",
+   "commit": "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f",
+   "series": "release/1.2",
+   "annotated": true,
+   "date": "2026-01-11T12:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "hal/v1.2.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.2.0"
+    },
+    {
+     "component": "hal",
+     "from": "1.2.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-101"
+   ],
+   "fixes_included": [
+    "FIX-101"
+   ]
+  },
+  {
+   "name": "lib-comm/v1.1.1",
+   "kind": "component",
+   "component": "lib-comm",
+   "version": "1.1.1",
+   "commit": "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f",
+   "series": "release/1.2",
+   "annotated": true,
+   "date": "2026-01-11T15:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "lib-comm/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.2.0"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.1.0"
+    },
+    {
+     "component": "hal",
+     "from": "1.1.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-102",
+    "FIX-105"
+   ],
+   "fixes_included": [
+    "FIX-102",
+    "FIX-105"
+   ]
+  },
+  {
+   "name": "fw-acme/v1.2.1",
+   "kind": "release",
+   "component": null,
+   "version": "1.2.1",
+   "commit": "e94189a6dae8eaa40439ecfc1480b47fd45b46d3",
+   "series": "customer/acme/1.2",
+   "annotated": true,
+   "date": "2026-01-12T06:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.1+acme.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "fw-acme/v1.2.0",
+   "diff": [
+    {
+     "component": "hal",
+     "from": "1.2.0+acme.1",
+     "to": "1.2.1+acme.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-101",
+    "FIX-102",
+    "FIX-105"
+   ],
+   "fixes_included": [
+    "FIX-101",
+    "FIX-102",
+    "FIX-105"
+   ]
+  },
+  {
+   "name": "hal/v1.2.1+acme.1",
+   "kind": "component",
+   "component": "hal",
+   "version": "1.2.1+acme.1",
+   "commit": "e94189a6dae8eaa40439ecfc1480b47fd45b46d3",
+   "series": "customer/acme/1.2",
+   "annotated": true,
+   "date": "2026-01-12T03:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.1+acme.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "hal/v1.2.1",
+   "diff": [
+    {
+     "component": "hal",
+     "from": "1.2.1",
+     "to": "1.2.1+acme.1"
+    }
+   ],
+   "fixes_added": [],
+   "fixes_included": [
+    "FIX-101"
+   ]
+  },
+  {
+   "name": "app/v1.1.1",
+   "kind": "component",
+   "component": "app",
+   "version": "1.1.1",
+   "commit": "5d590253d70ef4be452e07279389438c77043496",
+   "series": "release/1.1",
+   "annotated": true,
+   "date": "2026-01-14T09:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.1",
+    "driver": "1.0.1",
+    "hal": "1.1.1",
+    "lib-comm": "1.0.1"
+   },
+   "previous": "app/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    },
+    {
+     "component": "hal",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-104"
+   ],
+   "fixes_included": [
+    "FIX-104"
+   ]
+  },
+  {
+   "name": "driver/v1.0.1",
+   "kind": "component",
+   "component": "driver",
+   "version": "1.0.1",
+   "commit": "5d590253d70ef4be452e07279389438c77043496",
+   "series": "release/1.1",
+   "annotated": true,
+   "date": "2026-01-14T03:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.1",
+    "driver": "1.0.1",
+    "hal": "1.1.1",
+    "lib-comm": "1.0.1"
+   },
+   "previous": "driver/v1.0.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.0.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    },
+    {
+     "component": "hal",
+     "from": "1.0.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-103"
+   ],
+   "fixes_included": [
+    "FIX-103"
+   ]
+  },
+  {
+   "name": "fw/v1.1.1",
+   "kind": "release",
+   "component": null,
+   "version": "1.1.1",
+   "commit": "5d590253d70ef4be452e07279389438c77043496",
+   "series": "release/1.1",
+   "annotated": true,
+   "date": "2026-01-14T12:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.1",
+    "driver": "1.0.1",
+    "hal": "1.1.1",
+    "lib-comm": "1.0.1"
+   },
+   "previous": "fw/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    },
+    {
+     "component": "hal",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-101",
+    "FIX-103",
+    "FIX-104",
+    "FIX-105"
+   ],
+   "fixes_included": [
+    "FIX-101",
+    "FIX-103",
+    "FIX-104",
+    "FIX-105"
+   ]
+  },
+  {
+   "name": "hal/v1.1.1",
+   "kind": "component",
+   "component": "hal",
+   "version": "1.1.1",
+   "commit": "5d590253d70ef4be452e07279389438c77043496",
+   "series": "release/1.1",
+   "annotated": true,
+   "date": "2026-01-14T00:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.1",
+    "driver": "1.0.1",
+    "hal": "1.1.1",
+    "lib-comm": "1.0.1"
+   },
+   "previous": "hal/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.0.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    },
+    {
+     "component": "hal",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-101"
+   ],
+   "fixes_included": [
+    "FIX-101"
+   ]
+  },
+  {
+   "name": "lib-comm/v1.0.1",
+   "kind": "component",
+   "component": "lib-comm",
+   "version": "1.0.1",
+   "commit": "5d590253d70ef4be452e07279389438c77043496",
+   "series": "release/1.1",
+   "annotated": true,
+   "date": "2026-01-14T06:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.1",
+    "driver": "1.0.1",
+    "hal": "1.1.1",
+    "lib-comm": "1.0.1"
+   },
+   "previous": "lib-comm/v1.0.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.0.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    },
+    {
+     "component": "hal",
+     "from": "1.0.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.0.0",
+     "to": "1.0.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-105"
+   ],
+   "fixes_included": [
+    "FIX-105"
+   ]
+  },
+  {
+   "name": "app/v1.1.0+beta.1",
+   "kind": "component",
+   "component": "app",
+   "version": "1.1.0+beta.1",
+   "commit": "e1d7d26ffeead5472406cab8e9791c9a8dcd2222",
+   "series": "customer/beta/1.1",
+   "annotated": true,
+   "date": "2026-01-14T18:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.0+beta.1",
+    "driver": "1.0.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": "app/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.1.0+beta.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-104"
+   ],
+   "fixes_included": [
+    "FIX-104"
+   ]
+  },
+  {
+   "name": "fw-beta/v1.1.1",
+   "kind": "release",
+   "component": null,
+   "version": "1.1.1",
+   "commit": "ef02afee3f38551f4958f06f92822a1f6a6a11a2",
+   "series": "customer/beta/1.1",
+   "annotated": true,
+   "date": "2026-01-15T00:00:00+09:00",
+   "snapshot": {
+    "app": "1.1.0+beta.1",
+    "driver": "1.0.0",
+    "hal": "1.1.0",
+    "lib-comm": "1.0.0"
+   },
+   "previous": "fw-beta/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.1.0+beta.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-101",
+    "FIX-103",
+    "FIX-104",
+    "FIX-105"
+   ],
+   "fixes_included": [
+    "FIX-101",
+    "FIX-103",
+    "FIX-104",
+    "FIX-105"
+   ]
+  },
+  {
+   "name": "app/v1.2.1",
+   "kind": "component",
+   "component": "app",
+   "version": "1.2.1",
+   "commit": "ecd3ccec4c672b43b4455248bcb44291447b8af2",
+   "series": "release/1.2",
+   "annotated": true,
+   "date": "2026-01-15T09:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.1",
+    "driver": "1.1.1",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "app/v1.2.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.2.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "hal",
+     "from": "1.2.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-104"
+   ],
+   "fixes_included": [
+    "FIX-104"
+   ]
+  },
+  {
+   "name": "driver/v1.1.1",
+   "kind": "component",
+   "component": "driver",
+   "version": "1.1.1",
+   "commit": "ecd3ccec4c672b43b4455248bcb44291447b8af2",
+   "series": "release/1.2",
+   "annotated": true,
+   "date": "2026-01-15T06:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.1",
+    "driver": "1.1.1",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "driver/v1.1.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.1.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    },
+    {
+     "component": "hal",
+     "from": "1.1.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "lib-comm",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-103"
+   ],
+   "fixes_included": [
+    "FIX-103"
+   ]
+  },
+  {
+   "name": "fw/v1.2.2",
+   "kind": "release",
+   "component": null,
+   "version": "1.2.2",
+   "commit": "ecd3ccec4c672b43b4455248bcb44291447b8af2",
+   "series": "release/1.2",
+   "annotated": true,
+   "date": "2026-01-15T12:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.1",
+    "driver": "1.1.1",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "fw/v1.2.1",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.2.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-103",
+    "FIX-104"
+   ],
+   "fixes_included": [
+    "FIX-101",
+    "FIX-102",
+    "FIX-103",
+    "FIX-104",
+    "FIX-105"
+   ]
+  },
+  {
+   "name": "fw-acme/v1.2.2",
+   "kind": "release",
+   "component": null,
+   "version": "1.2.2",
+   "commit": "6ebe186470b5b7a1fab40089644bc72a498079e0",
+   "series": "customer/acme/1.2",
+   "annotated": true,
+   "date": "2026-01-15T18:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.1",
+    "driver": "1.1.1",
+    "hal": "1.2.1+acme.1",
+    "lib-comm": "1.1.1"
+   },
+   "previous": "fw-acme/v1.2.1",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.2.0",
+     "to": "1.2.1"
+    },
+    {
+     "component": "driver",
+     "from": "1.1.0",
+     "to": "1.1.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-103",
+    "FIX-104"
+   ],
+   "fixes_included": [
+    "FIX-101",
+    "FIX-102",
+    "FIX-103",
+    "FIX-104",
+    "FIX-105"
+   ]
+  },
+  {
+   "name": "fw-gamma/v1.2.1",
+   "kind": "release",
+   "component": null,
+   "version": "1.2.1",
+   "commit": "4278b4528b77e797366c926ad8bb73219e8967a7",
+   "series": "customer/gamma/1.2",
+   "annotated": true,
+   "date": "2026-01-16T00:00:00+09:00",
+   "snapshot": {
+    "app": "1.2.0",
+    "driver": "1.1.0",
+    "hal": "1.2.1",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "fw-gamma/v1.2.0",
+   "diff": [
+    {
+     "component": "hal",
+     "from": "1.2.0",
+     "to": "1.2.1"
+    }
+   ],
+   "fixes_added": [
+    "FIX-101",
+    "FIX-103",
+    "FIX-104"
+   ],
+   "fixes_included": [
+    "FIX-101",
+    "FIX-103",
+    "FIX-104"
+   ]
+  },
+  {
+   "name": "app/v1.3.0",
+   "kind": "component",
+   "component": "app",
+   "version": "1.3.0",
+   "commit": "cd9223d216e32b130944660f80fb28d37572b239",
+   "series": "main",
+   "annotated": true,
+   "date": "2026-01-16T06:00:00+09:00",
+   "snapshot": {
+    "app": "1.3.0",
+    "driver": "1.1.0",
+    "hal": "1.2.0",
+    "lib-comm": "1.1.0"
+   },
+   "previous": "app/v1.2.0",
+   "diff": [
+    {
+     "component": "app",
+     "from": "1.2.0",
+     "to": "1.3.0"
+    }
+   ],
+   "fixes_added": [
+    "FIX-104"
+   ],
+   "fixes_included": [
+    "FIX-104"
+   ]
+  }
+ ],
+ "fixes": [
+  {
+   "id": "FIX-101",
+   "title": "hal: I2C タイムアウト時にバスをリセットする",
+   "components": [
+    "hal"
+   ],
+   "origin": {
+    "commit": "56b640528d28e27aa7d4c49c43932b5532ca49f5",
+    "series": "main"
+   },
+   "units": [
+    "56b640528d28e27aa7d4c49c43932b5532ca49f5"
+   ],
+   "status": {
+    "main": {
+     "state": "applied",
+     "method": "ancestry",
+     "commits": [
+      "56b640528d28e27aa7d4c49c43932b5532ca49f5"
+     ]
+    },
+    "release/1.1": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "01d684d25cf9bf74a45e351c3c7a6027bec9ba82"
+     ]
+    },
+    "customer/beta/1.1": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "a6c34ecac67441150785238d1918335659539c3a"
+     ]
+    },
+    "release/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "2a69fa733ff435c3d5f7586b144ac25ea9146721"
+     ]
+    },
+    "customer/acme/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "2a69fa733ff435c3d5f7586b144ac25ea9146721"
+     ]
+    },
+    "customer/gamma/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "d4b13b499f7e8314259248dad251147f1ed913f7"
+     ]
+    }
+   }
+  },
+  {
+   "id": "FIX-102",
+   "title": "lib-comm: 再送カウンタのオーバーフローを修正",
+   "components": [
+    "lib-comm"
+   ],
+   "origin": {
+    "commit": "87650f3acfd0543fede5124b6901b5c141abbbf8",
+    "series": "release/1.2"
+   },
+   "units": [
+    "87650f3acfd0543fede5124b6901b5c141abbbf8"
+   ],
+   "status": {
+    "main": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "a83484ea00568394bf889f3b78a88f8e4c39c326"
+     ]
+    },
+    "release/1.1": {
+     "state": "excluded",
+     "exclusion": {
+      "reason": "lib-comm 1.1.0 で追加した再送処理の不具合。1.1 系には該当コード（retry.c）が存在しない",
+      "by": "tanaka",
+      "decided": "2026-02-02"
+     }
+    },
+    "customer/beta/1.1": {
+     "state": "excluded",
+     "exclusion": {
+      "reason": "lib-comm 1.1.0 で追加した再送処理の不具合。1.1 系には該当コード（retry.c）が存在しない",
+      "by": "tanaka",
+      "decided": "2026-02-02"
+     }
+    },
+    "release/1.2": {
+     "state": "applied",
+     "method": "ancestry",
+     "commits": [
+      "87650f3acfd0543fede5124b6901b5c141abbbf8"
+     ]
+    },
+    "customer/acme/1.2": {
+     "state": "applied",
+     "method": "ancestry",
+     "commits": [
+      "87650f3acfd0543fede5124b6901b5c141abbbf8"
+     ]
+    },
+    "customer/gamma/1.2": {
+     "state": "missing"
+    }
+   }
+  },
+  {
+   "id": "FIX-103",
+   "title": "driver: GPIO のデバウンス時間を 20ms にする",
+   "components": [
+    "driver"
+   ],
+   "origin": {
+    "commit": "f00e72b360d7a50140b4776d6aebbb275fceb781",
+    "series": "main"
+   },
+   "units": [
+    "f00e72b360d7a50140b4776d6aebbb275fceb781"
+   ],
+   "status": {
+    "main": {
+     "state": "applied",
+     "method": "ancestry",
+     "commits": [
+      "f00e72b360d7a50140b4776d6aebbb275fceb781"
+     ]
+    },
+    "release/1.1": {
+     "state": "patch_id_only",
+     "method": "patch_id",
+     "commits": [
+      "d1310b74625821030355a4c82d85732d7838f5cf"
+     ]
+    },
+    "customer/beta/1.1": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "9fbe5e692b24aa1df1c5254b24b6bbad3ca7ca6e"
+     ]
+    },
+    "release/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "1833f8aaa276275790286f6059eb7a0449f8e764"
+     ]
+    },
+    "customer/acme/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "11634dd5df9feaed8555a9c30b1851fb5a20c52d"
+     ]
+    },
+    "customer/gamma/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "69847fe8dc9887776cf167baa64383927be7d738"
+     ]
+    }
+   }
+  },
+  {
+   "id": "FIX-104",
+   "title": "app: ウォッチドッグ再起動時にログが欠落する問題を修正",
+   "components": [
+    "app"
+   ],
+   "origin": {
+    "commit": "dcaee669ef06ab1b98ea7f9d019e82f690e34725",
+    "series": "main"
+   },
+   "units": [
+    "dcaee669ef06ab1b98ea7f9d019e82f690e34725"
+   ],
+   "status": {
+    "main": {
+     "state": "applied",
+     "method": "ancestry",
+     "commits": [
+      "dcaee669ef06ab1b98ea7f9d019e82f690e34725"
+     ]
+    },
+    "release/1.1": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "117bcb427ec9675384d0955c19f8cc477b18b7c6"
+     ]
+    },
+    "customer/beta/1.1": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "6a489b98071171492f28fcba19fe120755d13d2c"
+     ]
+    },
+    "release/1.2": {
+     "state": "applied",
+     "method": "cherry_pick_x",
+     "commits": [
+      "d8c96dc3c341cc861a0795b27425486c4a5f7920"
+     ]
+    },
+    "customer/acme/1.2": {
+     "state": "applied",
+     "method": "cherry_pick_x",
+     "commits": [
+      "66e31426e0209c7b2761797860009c879d1f0776"
+     ]
+    },
+    "customer/gamma/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "399b93b990eb058c506cef588ccbd8523a8f9278"
+     ]
+    }
+   }
+  },
+  {
+   "id": "FIX-105",
+   "title": "lib-comm: フレーム長の上限チェックを追加",
+   "components": [
+    "lib-comm"
+   ],
+   "origin": {
+    "commit": "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+    "series": "main"
+   },
+   "units": [
+    "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+    "c07a77f2ac4fe305814d30a66fce8593a79ed9e9"
+   ],
+   "status": {
+    "main": {
+     "state": "applied",
+     "method": "ancestry",
+     "commits": [
+      "83570d28c51e3fe73bbe16636b25f7635fd71ecb",
+      "c07a77f2ac4fe305814d30a66fce8593a79ed9e9"
+     ],
+     "units_total": 2,
+     "units_matched": 2
+    },
+    "release/1.1": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "26611fc1e47080c0b65adeed9ad45e8eba05c8fc",
+      "661f0d68b31977ea718beb75df3c7af665d97fd7"
+     ],
+     "units_total": 2,
+     "units_matched": 2
+    },
+    "customer/beta/1.1": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "307b6bbd8d09c91c393e7ac91540ede0d159f587",
+      "30f925b8679a7eb4f9657d6195e4ccf5ed91bd23"
+     ],
+     "units_total": 2,
+     "units_matched": 2
+    },
+    "release/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "2c50cb9771d007b1133b49884d906e0a0087ad2c",
+      "1a65ad804386285fc3d90bb4ed0e75d81f4adaa7"
+     ],
+     "units_total": 2,
+     "units_matched": 2
+    },
+    "customer/acme/1.2": {
+     "state": "applied",
+     "method": "trailer",
+     "commits": [
+      "2c50cb9771d007b1133b49884d906e0a0087ad2c",
+      "1a65ad804386285fc3d90bb4ed0e75d81f4adaa7"
+     ],
+     "units_total": 2,
+     "units_matched": 2
+    },
+    "customer/gamma/1.2": {
+     "state": "missing",
+     "units_total": 2,
+     "units_matched": 1,
+     "commits": [
+      "f5481876cac2b8e214631b2d70c483a0595004f9"
+     ]
+    }
+   }
+  }
+ ],
+ "dependency_checks": [
+  {
+   "series": "main",
+   "at": {
+    "kind": "head",
+    "ref": "main",
+    "commit": "cd9223d216e32b130944660f80fb28d37572b239"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.0",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.0",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "release/1.1",
+   "at": {
+    "kind": "head",
+    "ref": "release/1.1",
+    "commit": "5d590253d70ef4be452e07279389438c77043496"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.1",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.1",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "release/1.1",
+   "at": {
+    "kind": "tag",
+    "ref": "fw/v1.1.0",
+    "commit": "27ceb520c22fdec4252c2faa03ebbc5af4f3f11a"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "release/1.1",
+   "at": {
+    "kind": "tag",
+    "ref": "fw/v1.1.1",
+    "commit": "5d590253d70ef4be452e07279389438c77043496"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.1",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.1",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/beta/1.1",
+   "at": {
+    "kind": "head",
+    "ref": "customer/beta/1.1",
+    "commit": "ef02afee3f38551f4958f06f92822a1f6a6a11a2"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": false
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    }
+   ],
+   "ok": false
+  },
+  {
+   "series": "customer/beta/1.1",
+   "at": {
+    "kind": "tag",
+    "ref": "fw-beta/v1.1.0",
+    "commit": "ab754fdd2a31eb59192c651e1e868319641b47e1"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/beta/1.1",
+   "at": {
+    "kind": "tag",
+    "ref": "fw-beta/v1.1.1",
+    "commit": "ef02afee3f38551f4958f06f92822a1f6a6a11a2"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": false
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.0.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    }
+   ],
+   "ok": false
+  },
+  {
+   "series": "release/1.2",
+   "at": {
+    "kind": "head",
+    "ref": "release/1.2",
+    "commit": "ecd3ccec4c672b43b4455248bcb44291447b8af2"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "release/1.2",
+   "at": {
+    "kind": "tag",
+    "ref": "fw/v1.2.0",
+    "commit": "7d06075403cf1b3841b9d63df365b398bb0dc869"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.0",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.0",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "release/1.2",
+   "at": {
+    "kind": "tag",
+    "ref": "fw/v1.2.1",
+    "commit": "1af5412435156b4f3e8a66cd2a8ba4d57fa69b6f"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "release/1.2",
+   "at": {
+    "kind": "tag",
+    "ref": "fw/v1.2.2",
+    "commit": "ecd3ccec4c672b43b4455248bcb44291447b8af2"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/acme/1.2",
+   "at": {
+    "kind": "head",
+    "ref": "customer/acme/1.2",
+    "commit": "6ebe186470b5b7a1fab40089644bc72a498079e0"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.1+acme.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.1+acme.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/acme/1.2",
+   "at": {
+    "kind": "tag",
+    "ref": "fw-acme/v1.2.0",
+    "commit": "dfd0f323cb9a25e55a684c2e806ab827ad7d819a"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.0+acme.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.0+acme.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/acme/1.2",
+   "at": {
+    "kind": "tag",
+    "ref": "fw-acme/v1.2.1",
+    "commit": "e94189a6dae8eaa40439ecfc1480b47fd45b46d3"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.1+acme.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.1+acme.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/acme/1.2",
+   "at": {
+    "kind": "tag",
+    "ref": "fw-acme/v1.2.2",
+    "commit": "6ebe186470b5b7a1fab40089644bc72a498079e0"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.1+acme.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.1",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.1+acme.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/gamma/1.2",
+   "at": {
+    "kind": "head",
+    "ref": "customer/gamma/1.2",
+    "commit": "4278b4528b77e797366c926ad8bb73219e8967a7"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/gamma/1.2",
+   "at": {
+    "kind": "tag",
+    "ref": "fw-gamma/v1.2.0",
+    "commit": "49c5a679251f72c0d2084d07871ea81f14f4dfa5"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.0",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.0",
+     "ok": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "series": "customer/gamma/1.2",
+   "at": {
+    "kind": "tag",
+    "ref": "fw-gamma/v1.2.1",
+    "commit": "4278b4528b77e797366c926ad8bb73219e8967a7"
+   },
+   "results": [
+    {
+     "component": "app",
+     "dependency": "hal",
+     "constraint": ">=1.2.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    },
+    {
+     "component": "app",
+     "dependency": "lib-comm",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "hal",
+     "dependency": "driver",
+     "constraint": ">=1.1.0, <2.0.0",
+     "actual": "1.1.0",
+     "ok": true
+    },
+    {
+     "component": "lib-comm",
+     "dependency": "hal",
+     "constraint": ">=1.0.0, <2.0.0",
+     "actual": "1.2.1",
+     "ok": true
+    }
+   ],
+   "ok": true
+  }
+ ],
+ "violations": [
+  {
+   "kind": "dependency_violation",
+   "severity": "error",
+   "message": "customer/beta/1.1 @ customer/beta/1.1: app は hal >=1.2.0, <2.0.0 を要求（実際は 1.1.0）",
+   "refs": {
+    "series": "customer/beta/1.1",
+    "component": "app",
+    "ref": "customer/beta/1.1"
+   }
+  },
+  {
+   "kind": "dependency_violation",
+   "severity": "error",
+   "message": "customer/beta/1.1 @ fw-beta/v1.1.1: app は hal >=1.2.0, <2.0.0 を要求（実際は 1.1.0）",
+   "refs": {
+    "series": "customer/beta/1.1",
+    "component": "app",
+    "ref": "fw-beta/v1.1.1"
+   }
+  },
+  {
+   "kind": "fix_missing",
+   "severity": "error",
+   "message": "FIX-102 が customer/gamma/1.2 に未適用",
+   "refs": {
+    "fix": "FIX-102",
+    "series": "customer/gamma/1.2"
+   }
+  },
+  {
+   "kind": "fix_missing",
+   "severity": "error",
+   "message": "FIX-105 が customer/gamma/1.2 に未適用（2 コミット中 1 のみ適用）",
+   "refs": {
+    "fix": "FIX-105",
+    "series": "customer/gamma/1.2"
+   }
+  },
+  {
+   "kind": "patch_id_only",
+   "severity": "warning",
+   "message": "FIX-103 は release/1.1 に patch-id でのみ一致（トレーラー・-x の記録がない）",
+   "refs": {
+    "fix": "FIX-103",
+    "series": "release/1.1"
+   }
+  }
+ ],
+ "summary": {
+  "errors": 4,
+  "warnings": 1
+ },
+ "extensions": {}
+}

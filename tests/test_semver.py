@@ -1,6 +1,6 @@
 import pytest
 
-from release_collect.semver import Constraint, Version, VersionError, compare
+from release_viewer.semver import Constraint, Version, VersionError, compare
 
 
 def v(s):

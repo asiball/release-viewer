@@ -79,8 +79,9 @@ def test_multi_commit_fix_requires_all_units(data):
 
 def test_excluded_carries_reason(data):
     st = fix(data, "FIX-102")["status"]["release/1.1"]
-    assert "retry.c" in st["reason"]
-    assert st["by"] == "tanaka"
+    assert "reason" not in st  # トップレベルの reason は not_applicable 専用
+    assert "retry.c" in st["exclusion"]["reason"]
+    assert (st["exclusion"]["by"], st["exclusion"]["decided"]) == ("tanaka", "2026-02-02")
 
 
 def test_patch_id_match_points_to_evidence_commit(data):
@@ -101,7 +102,7 @@ def test_missing_severity(data):
 
 
 def test_maintenance_series_missing_is_warning(sample_repo, config_dir):
-    from release_collect.collect import Collector
+    from release_viewer.collect import Collector
     # FIX-102 の除外宣言を外すと、maintenance の release/1.1 は warning、active の beta は error
     (config_dir / "exclusions.toml").write_text("", encoding="utf-8")
     d = Collector(sample_repo, config_dir=config_dir).collect()
