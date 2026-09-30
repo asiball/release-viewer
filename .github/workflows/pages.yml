@@ -64,9 +64,38 @@ jobs:
         with:
           path: _site
 
+  # action.yml（composite action）の自己検証: 利用側と同じ `uses:` でサンプルを走査する
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate sample repository
+        run: python3 sample/generate_sample_repo.py build/sample-fw
+
+      # main には違反がないので exit 0。--site で画面資産も揃うこと
+      - name: Run the action (check main, assemble site)
+        uses: ./
+        with:
+          args: check build/sample-fw --series main --site _site_action
+
+      - name: Site assets are assembled
+        run: test -f _site_action/index.html && test -f _site_action/data.js && test -f _site_action/data.json
+
+      # サンプル全体には意図的な違反があるので、exit 1 が action を通して伝わること
+      - name: Run the action (gate must fail)
+        id: gate
+        continue-on-error: true
+        uses: ./
+        with:
+          args: check build/sample-fw
+
+      - name: Exit code propagates through the action
+        run: test "${{ steps.gate.outcome }}" = "failure" || { echo "expected the gate step to fail"; exit 1; }
+
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: [test, build]
+    needs: [test, build, action]
     runs-on: ubuntu-latest
     permissions:
       pages: write
