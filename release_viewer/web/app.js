@@ -17,7 +17,9 @@ const METHOD = {
   cherry_pick_x: "cherry-pick -x の記録",
   patch_id: "patch-id 一致のみ",
 };
-const LANE_COLORS = ["#0969da", "#1a7f37", "#8250df", "#bc4c00", "#bf3989", "#1b7c83", "#4d2d00", "#57606a"];
+// 13 系列程度まで重複しないよう 14 色。隣り合うレーンで色相が近くならない並び（赤は未伝播の強調に使うので避ける）
+const LANE_COLORS = ["#0969da", "#1a7f37", "#8250df", "#bc4c00", "#bf3989", "#1b7c83", "#4d2d00", "#57606a",
+  "#b08800", "#0550ae", "#a475f9", "#e16f24", "#ce5d97", "#4ac26b"];
 
 let D = null;
 const IDX = {};
@@ -362,7 +364,8 @@ function matrixTable(onlyMissing, includeWarn, focusFix) {
     return Object.values(f.status).some((st) => st.state === "missing" || (includeWarn && st.state === "patch_id_only"));
   });
   if (!fixes.length) return el("p", { class: "ok" }, "該当する fix はありません。");
-  return el("table", { class: "matrix" },
+  // 系列が多いと列が潰れるので、表は潰さず横スクロールにする（Fix-ID 列は固定）
+  return el("div", { class: "matrix-wrap" }, el("table", { class: "matrix" },
     el("tr", null, el("th", null, "Fix-ID"), el("th", null, "件名"), el("th", null, "コンポーネント"), el("th", null, "起点"),
       IDX.lanes.map((sid) => el("th", { title: seriesName(sid) }, el("span", { class: "swatch", style: `background:${IDX.laneColor.get(sid)}` }), " ", sid))),
     fixes.map((f) => el("tr", { id: "fixrow-" + f.id, class: f.id === focusFix ? "highlight" : null },
@@ -380,7 +383,7 @@ function matrixTable(onlyMissing, includeWarn, focusFix) {
           onclick: () => showFix(f, sid),
         }, STATE[st.state].mark, st.state === "missing" ? partial : "",
           st.method && st.method !== "ancestry" && st.state === "applied" ? el("div", { class: "muted", style: "font-size:11px" }, st.method === "trailer" ? "trailer" : "-x") : "");
-      }))));
+      })))));
 }
 
 function showFix(f, focusSeries) {

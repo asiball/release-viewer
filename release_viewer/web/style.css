@@ -73,7 +73,13 @@ th { background: var(--bg-soft); font-weight: 600; }
 .row .date { color: var(--muted); font-size: 12px; margin-left: auto; padding-right: 8px; }
 
 /* マトリクス */
+.matrix-wrap { overflow-x: auto; }
 table.matrix td:first-child { white-space: nowrap; }
+/* Fix-ID 列は横スクロールしても見えるよう固定する */
+table.matrix th:first-child, table.matrix td:first-child { position: sticky; left: 0; z-index: 1; background: #fff; }
+table.matrix th:first-child { background: var(--bg-soft); }
+table.matrix td:nth-child(2) { min-width: 24em; }
+table.matrix th:nth-child(3), table.matrix th:nth-child(4), table.matrix td:nth-child(3), table.matrix td:nth-child(4) { white-space: nowrap; }
 table.matrix td.cell { text-align: center; cursor: pointer; white-space: nowrap; }
 td.st-applied { background: var(--ok-bg); color: var(--ok); }
 td.st-patch_id_only { background: var(--warn-bg); color: var(--warn); }
